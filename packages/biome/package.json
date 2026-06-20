@@ -1,0 +1,17 @@
+{
+  "name": "@kigu/biome",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Shared Biome configuration",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TairuFramework/kigu",
+    "directory": "packages/biome"
+  },
+  "publishConfig": { "access": "public" },
+  "files": ["biome.json"],
+  "exports": {
+    ".": "./biome.json",
+    "./biome.json": "./biome.json"
+  }
+}
