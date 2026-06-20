@@ -1,0 +1,6 @@
+{
+  "name": "kigu",
+  "version": "0.1.0",
+  "description": "Shared Yulsi development plugin: workflow skills, conventions, and discovery.",
+  "author": { "name": "Paul Le Cam" }
+}
