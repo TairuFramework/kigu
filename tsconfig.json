@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "es2025",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "noEmit": true
+  }
+}
