@@ -1,0 +1,56 @@
+name: Build and test
+on:
+  workflow_call:
+    inputs:
+      node-versions:
+        description: 'JSON array of Node versions to test'
+        type: string
+        required: false
+        default: '[24, 26]'
+      integration-tests-dir:
+        description: 'Working directory for integration tests (empty to skip)'
+        type: string
+        required: false
+        default: ''
+      ts-readiness-check:
+        description: 'Run the TS 7 stableTypeOrdering readiness check'
+        type: boolean
+        required: false
+        default: true
+
+env:
+  CI: true
+  DO_NOT_TRACK: 1
+
+jobs:
+  build:
+    name: on Node ${{ matrix.node }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: ${{ fromJSON(inputs.node-versions) }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup environment
+        uses: ./setup
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Lint
+        run: pnpm run lint
+
+      - name: Unit tests
+        run: pnpm run test
+
+      - name: Integration tests
+        if: ${{ inputs.integration-tests-dir != '' }}
+        working-directory: ${{ inputs.integration-tests-dir }}
+        run: pnpm run test
+
+      - name: TS 7 readiness check (stableTypeOrdering)
+        if: ${{ inputs.ts-readiness-check }}
+        run: pnpm -r exec tsc --noEmit --skipLibCheck --stableTypeOrdering
+        continue-on-error: true

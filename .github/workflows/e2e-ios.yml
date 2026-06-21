@@ -1,0 +1,66 @@
+name: iOS E2E
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: 'Directory of the Expo e2e test app'
+        type: string
+        required: false
+        default: tests/e2e-expo
+      runs-on:
+        description: 'Runner label for the macOS job'
+        type: string
+        required: false
+        default: macos-26
+      node-version:
+        type: string
+        required: false
+        default: '24'
+
+env:
+  CI: true
+  DO_NOT_TRACK: 1
+  MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED: true
+  MAESTRO_CLI_NO_ANALYTICS: true
+
+jobs:
+  test:
+    runs-on: ${{ inputs.runs-on }}
+    timeout-minutes: 30
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup environment
+        uses: ./setup
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Install Maestro
+        shell: bash
+        run: |
+          curl -Ls "https://get.maestro.mobile.dev" | bash
+          echo "$HOME/.maestro/bin" >> $GITHUB_PATH
+
+      - name: Build iOS app
+        working-directory: ${{ inputs.working-directory }}
+        run: pnpm run ios:release
+
+      - name: Verify app is running
+        run: |
+          # Check if the iOS Simulator is running the app
+          xcrun simctl list devices booted
+
+          # Take a screenshot to verify
+          MAESTRO_CLI_NO_ANALYTICS=true MAESTRO_CLI_ANALYSIS_NOTIFICATION_DISABLED=true maestro screenshot before-test.png || echo "Screenshot failed, continuing..."
+
+      - name: Run Maestro tests
+        working-directory: ${{ inputs.working-directory }}
+        run: pnpm run test
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: maestro-screenshots
+          path: "*.png"

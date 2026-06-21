@@ -1,0 +1,38 @@
+name: CI
+on: [push, pull_request]
+
+env:
+  CI: true
+  DO_NOT_TRACK: 1
+
+jobs:
+  actionlint:
+    name: Lint workflows
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Run actionlint
+        env:
+          # Exclude info-level style lints in the verbatim e2e shell scripts
+          # (unquoted vars; one intentional single-quoted boot-completion loop).
+          SHELLCHECK_OPTS: --exclude=SC2086,SC2016
+        run: |
+          bash <(curl -fsSL https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          ./actionlint -color
+
+  lint:
+    name: Biome
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup environment
+        uses: ./setup
+        with:
+          build: 'false'
+
+      - name: Lint
+        run: pnpm exec biome ci ./packages ./plugins

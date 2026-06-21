@@ -31,7 +31,8 @@ repo boundary.
 
 ## Architecture
 
-Five repositories. Dependencies point strictly downward (left), no cycles. GitHub org:
+Five core repositories, plus `@tejika` as a local-side foundation consuming the stack.
+Dependencies point strictly downward (left), no cycles. GitHub org:
 `TairuFramework`. npm scopes as below.
 
 ```
@@ -42,6 +43,8 @@ Five repositories. Dependencies point strictly downward (left), no cycles. GitHu
 @sozai  ←  @kokuin  ←  @enkaku  ←  @kumiai
  素材        刻印         遠隔         組合
  core       identity     RPC          MLS / group
+                            ▲
+                         @tejika (手近) — local-side foundation, counterpart to @enkaku
 ```
 
 | scope | meaning | role |
@@ -51,6 +54,7 @@ Five repositories. Dependencies point strictly downward (left), no cycles. GitHu
 | `@kokuin` | 刻印 engraved seal | identity / auth / keys |
 | `@enkaku` | 遠隔 remote | RPC (keeps existing scope and version line) |
 | `@kumiai` | 組合 union / cooperative | MLS group messaging |
+| `@tejika` | 手近 near at hand | local-side foundation: CLI/process/server (consumes the stack) |
 
 Naming constraint used throughout: Japanese word with a direct meaning matching the repo's
 scope, available as an npm organization (verified via
@@ -88,6 +92,22 @@ internal consumers (it is a graph orphan in RPC). `runtime-expo` (was `expo-runt
 Keystores shortened to their environment (scope `@kokuin` already implies keys).
 `ledger-identity` → `ledger-device` to mark the Ledger brand rather than a generic ledger.
 
+**`KeyEntry` / `KeyStore` types move to `@kokuin/token`.** In the monorepo these
+14-line keystore-contract types lived in `@enkaku/protocol` (RPC) and were re-exported
+from there; only the keystores consumed them. Left as-is the split would force
+`@kokuin` to depend on `@enkaku/protocol` — an *upward* dep, i.e. a cycle (`@enkaku`
+already depends on `@kokuin/token`). They are pure identity-layer contracts, so they
+move into `@kokuin/token` (`src/keystore.ts`, exported from the index); every keystore
+imports them from `@kokuin/token`. When `@enkaku` is trimmed it re-exports them from
+`@kokuin/token` for back-compat (downward dep — clean).
+
+**`apps/ledger` moves to `@kokuin`.** The BOLOS on-device firmware (C, Ledger
+Nano S+/X) that pairs with `@kokuin/ledger-device` over APDU lives at
+`@kokuin`'s `apps/ledger` — not a pnpm package (outside the `packages/*` glob), built
+via its own Docker/Makefile. The APDU protocol must version in lockstep with the
+host-side package, so firmware + host provider co-locate. The on-device app and its
+ticker were rebranded `Enkaku`/`ENK` → `Kokuin`/`KOK`.
+
 ### @enkaku (RPC) — bumps to 0.18.0 at the split
 
 Keeps its scope and version line. The 0.18.0 bump signals the breaking reorg (moved packages
@@ -120,6 +140,28 @@ Locked group while pre-1.0 (young, tightly coupled, all moving together).
 | broadcast | broadcast | generic fan-out; sole consumer is `rpc`, kept here |
 | hub-protocol, hub-client, hub-server, hub-tunnel | unchanged | hub subsystem (prefix kept — real subsystem) |
 | rpc | group-rpc | redundant `group-` prefix dropped |
+
+### @tejika (local-side foundation) — not part of the core split
+
+`@tejika` (手近, "near at hand") is a separate repo, not one of the five split out of the
+enkaku monorepo. It is the **local-side** counterpart to `@enkaku` (遠隔, "remote"): where
+Enkaku is the transport/remote foundation, tejika is everything at hand on the local machine
+— CLI tooling, local process/daemon lifecycle, local HTTP servers, and path/port resolution.
+It sits **above `@enkaku`** (consumes its RPC client/server + transports) and **below** the
+apps that compose it.
+
+| package | role |
+|---------|------|
+| env | local paths, ports, env-var overrides |
+| process | local daemon spawn / lifecycle / Enkaku client reconnect |
+| server | local Hono HTTP server (loopback-private default, opt-in network mode) |
+| cli | commander + Ink plumbing |
+| ui | generic Ink component kit |
+
+Tejika consumes the split stack as a downstream user: `@kigu/dev` for tooling, `@enkaku/*`
+(0.18 — `client`, `protocol`, `server`, `socket`, `http-serve`) for RPC. It does **not**
+depend on `@kokuin`/`@kumiai` directly. Like the other repos it extends `@kigu/dev` configs
+(`nodeLinker: hoisted`, biome/tsconfig `extends`) and references the kigu marketplace.
 
 ## Full rename map (codemod spec)
 
@@ -240,7 +282,8 @@ Order — bottom-up, each layer published before the layer above rewrites its de
 3. **@kokuin** — extract, codemod its deps to `@sozai`, publish 0.1.0.
 4. **@enkaku** — trim to RPC-only, codemod its deps to `@sozai`/`@kokuin`, publish **0.18.0**.
 5. **@kumiai** — extract, codemod deps to `@sozai`/`@kokuin`/`@enkaku`, publish 0.1.0.
-6. **Consumers** (`kubun`, `mokei`) — codemod each repo, one PR per repo, all-at-once.
+6. **Consumers** (`tejika`, `kubun`, `mokei`) — codemod each repo, one PR per repo, all-at-once.
+   `tejika` (local-side foundation) adopts `@kigu/dev` and consumes `@enkaku` 0.18 only.
 
 Blast radius (consumer import sites, pre-split): ~209 stay `@enkaku` (zero churn — the heaviest
 single dep, `transport` at 78, does not move), ~413 → `@sozai` (async/schema/stream dominate),

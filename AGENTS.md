@@ -20,6 +20,7 @@ here or in consuming repos.
 
 - Add `@kigu/dev` as a devDependency; extend `@kigu/dev/tsconfig.json`, `["@kigu/dev/biome.json"]`, and `@kigu/dev/swc.json`.
 - Reference the `kigu` marketplace and install the `kigu` plugin; add a local domain plugin per repo (instantiate `discover-template`).
+- Reference the CI: call `TairuFramework/kigu/.github/workflows/<name>@main` (reusable workflows) and `TairuFramework/kigu/setup@main` (the setup action in custom jobs). See `.github/README.md`.
 
 ## Guardrails
 
