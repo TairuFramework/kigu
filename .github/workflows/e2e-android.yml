@@ -136,7 +136,7 @@ jobs:
           echo "✅ ADB connection verified"
 
       - name: Setup environment
-        uses: ./setup
+        uses: TairuFramework/kigu/setup@main
         with:
           node-version: ${{ inputs.node-version }}
 

@@ -35,7 +35,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup environment
-        uses: ./setup
+        uses: TairuFramework/kigu/setup@main
         with:
           node-version: ${{ matrix.node }}
 
