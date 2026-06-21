@@ -8,8 +8,12 @@
     "url": "https://github.com/TairuFramework/kigu",
     "directory": "packages/biome"
   },
-  "publishConfig": { "access": "public" },
-  "files": ["biome.json"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "biome.json"
+  ],
   "exports": {
     ".": "./biome.json",
     "./biome.json": "./biome.json"

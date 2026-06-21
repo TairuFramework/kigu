@@ -8,8 +8,12 @@
     "url": "https://github.com/TairuFramework/kigu",
     "directory": "packages/tsconfig"
   },
-  "publishConfig": { "access": "public" },
-  "files": ["*.json"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "*.json"
+  ],
   "exports": {
     "./base.json": "./base.json"
   }

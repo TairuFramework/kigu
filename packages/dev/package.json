@@ -8,8 +8,12 @@
     "url": "https://github.com/TairuFramework/kigu",
     "directory": "packages/dev"
   },
-  "publishConfig": { "access": "public" },
-  "files": ["README.md"],
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "README.md"
+  ],
   "dependencies": {
     "@kigu/biome": "workspace:^",
     "@kigu/swc": "workspace:^",
