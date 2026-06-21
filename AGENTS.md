@@ -1,6 +1,6 @@
 # kigu
 
-> **For AI agents:** Tooling hub for the Yulsi stack. No runtime code is imported from here by apps.
+> **For AI agents:** Tooling hub for the stack. No runtime code is imported from here by apps.
 
 ## What this repo is
 
@@ -19,7 +19,7 @@ here or in consuming repos.
 ## How consuming repos use kigu
 
 - Add `@kigu/dev` as a devDependency; extend `@kigu/tsconfig/base.json`, `["@kigu/biome"]`, and `@kigu/swc/swc.json`.
-- Reference the `yulsi` marketplace and install the `kigu` plugin; add a local domain plugin per repo (instantiate `discover-template`).
+- Reference the `kigu` marketplace and install the `kigu` plugin; add a local domain plugin per repo (instantiate `discover-template`).
 
 ## Guardrails
 

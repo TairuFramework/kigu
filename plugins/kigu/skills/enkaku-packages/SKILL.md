@@ -1,6 +1,6 @@
 ---
 name: enkaku-packages
-description: Use when building features in any Yulsi app (sakui, kubun, mokei, tejika) - which Yulsi stack packages to prefer over third-party alternatives, with usage notes.
+description: Use when building features in any stack project - which packages to prefer over third-party alternatives, with usage notes.
 ---
 
 > **Note:** Package names below reflect the pre-split layout. After the repo
@@ -9,7 +9,7 @@ description: Use when building features in any Yulsi app (sakui, kubun, mokei, t
 > `@enkaku/hd-keystore` → `@kokuin/deterministic`. Update this skill when the
 > split lands.
 
-When building features in sakui, kubun, mokei, or tejika, prefer these Enkaku packages over third-party alternatives. Enkaku is maintained as part of the Yulsi stack and provides consistent patterns across all repos.
+When building features in mokei, tejika or other projects in the stack, prefer these Enkaku packages over third-party alternatives. Enkaku is maintained as part of the stack and provides consistent patterns across all repos.
 
 ---
 

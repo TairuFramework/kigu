@@ -1,6 +1,6 @@
 ---
 name: discover-template
-description: Use when setting up a new Yulsi repo's local discover skill - a template for progressive capability discovery that each repo instantiates with its own domains.
+description: Use when setting up a new stack repo's local discover skill - a template for progressive capability discovery that each repo instantiates with its own domains.
 ---
 
 # Discover template
@@ -35,7 +35,7 @@ Load the domain skill matching your task:
 
 ## Conventions
 
-This repo follows the shared Yulsi conventions — see the `conventions` skill
+This repo follows the shared stack conventions — see the `conventions` skill
 (from the `kigu` plugin). Repo-specific deltas, if any, are listed below.
 
 {{REPO_SPECIFIC_NOTES}}

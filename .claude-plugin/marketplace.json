@@ -1,11 +1,11 @@
 {
-  "name": "yulsi",
+  "name": "kigu",
   "owner": { "name": "Paul Le Cam" },
   "plugins": [
     {
       "name": "kigu",
       "source": "./plugins/kigu",
-      "description": "Shared Yulsi development plugin: workflow skills, conventions, and discovery."
+      "description": "Shared development plugin: workflow skills, conventions, and discovery."
     }
   ]
 }

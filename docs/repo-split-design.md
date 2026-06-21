@@ -22,7 +22,7 @@ on its own cadence.
 2. **Scope clarity** — each repo has one clear altitude and purpose.
 3. **Independent release cadence** — MLS moves fast, core/identity ossify.
 
-Non-goal: external reuse outside the Yulsi stack.
+Non-goal: external reuse outside the stack.
 
 Key reframe: churn is caused by lockstep versioning, not by being one repo. The split is
 justified by clarity + cadence; it *also* fixes churn as a side effect, because cross-repo deps
@@ -193,7 +193,7 @@ No name clashes within or across scopes.
 
 ## @kigu — the tooling hub
 
-`@kigu` is the renamed `/yulsi/agents` repo. It carries three faces in one repository.
+`@kigu` is the renamed `/agents` repo. It carries three faces in one repository.
 
 ```
 kigu/
@@ -205,7 +205,7 @@ kigu/
     swc/                    #   @kigu/swc
     dev/                    #   @kigu/dev  (toolchain devDep preset)
   .claude-plugin/
-    marketplace.json        # FACE 2 — the Yulsi plugin marketplace
+    marketplace.json        # FACE 2 — the plugin marketplace
   plugins/
     kigu/                   #   single shared plugin
       .claude-plugin/plugin.json
