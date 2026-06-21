@@ -1,0 +1,15 @@
+{
+  "name": "kigu-repo",
+  "version": "0.0.0",
+  "author": "Paul Le Cam",
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@11.8.0",
+  "scripts": {
+    "lint": "biome check --write ./packages ./plugins",
+    "format": "biome format --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "catalog:"
+  }
+}

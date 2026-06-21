@@ -1,0 +1,11 @@
+packages:
+  - packages/*
+
+allowBuilds:
+  '@swc/core': true
+  esbuild: true
+
+catalog:
+  '@biomejs/biome': ^2.5.0
+
+nodeLinker: hoisted

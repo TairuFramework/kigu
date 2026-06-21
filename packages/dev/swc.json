@@ -1,0 +1,20 @@
+{
+  "jsc": {
+    "parser": {
+      "syntax": "typescript"
+    },
+    "target": "esnext",
+    "transform": {
+      "optimizer": {
+        "globals": {
+          "vars": {
+            "process.env.NODE_ENV": "production"
+          }
+        }
+      },
+      "react": {
+        "runtime": "automatic"
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "kigu",
+  "owner": { "name": "Paul Le Cam" },
+  "plugins": [
+    {
+      "name": "kigu",
+      "source": "./plugins/kigu",
+      "description": "Shared development plugin: workflow skills, conventions, and discovery."
+    }
+  ]
+}

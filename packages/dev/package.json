@@ -1,0 +1,37 @@
+{
+  "name": "@kigu/dev",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Shared dev toolchain preset",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TairuFramework/kigu",
+    "directory": "packages/dev"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "biome.json",
+    "swc.json",
+    "tsconfig.json",
+    "README.md"
+  ],
+  "exports": {
+    "./biome.json": "./biome.json",
+    "./swc.json": "./swc.json",
+    "./tsconfig.json": "./tsconfig.json"
+  },
+  "dependencies": {
+    "@biomejs/biome": "^2.5.0",
+    "@swc/cli": "^0.8.1",
+    "@swc/core": "^1.15.41",
+    "@types/node": "^26.0.0",
+    "@vitest/ui": "^4.1.9",
+    "del-cli": "^7.0.0",
+    "tsx": "^4.22.4",
+    "turbo": "^2.9.18",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
+  }
+}
