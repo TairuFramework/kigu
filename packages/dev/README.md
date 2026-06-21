@@ -1,7 +1,8 @@
 # @kigu/dev
 
 One devDependency that brings the whole toolchain (Biome, SWC, TypeScript,
-Turbo, Vitest, tsx, del-cli) plus the `@kigu` config packages.
+Turbo, Vitest, tsx, del-cli) and the shared configs in one package, so the
+tools and the configs they drive stay in sync.
 
 ```jsonc
 // a repo's package.json
@@ -10,5 +11,8 @@ Turbo, Vitest, tsx, del-cli) plus the `@kigu` config packages.
 }
 ```
 
-Then extend the configs: `@kigu/tsconfig/base.json`, `["@kigu/biome"]`,
-`@kigu/swc/swc.json`.
+Then extend the configs:
+
+- **TypeScript** — `"extends": "@kigu/dev/tsconfig.json"`
+- **Biome** — `"extends": ["@kigu/dev/biome.json"]`
+- **SWC** — `"extends": "@kigu/dev/swc.json"`

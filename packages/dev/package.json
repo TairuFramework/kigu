@@ -12,12 +12,17 @@
     "access": "public"
   },
   "files": [
+    "biome.json",
+    "swc.json",
+    "tsconfig.json",
     "README.md"
   ],
+  "exports": {
+    "./biome.json": "./biome.json",
+    "./swc.json": "./swc.json",
+    "./tsconfig.json": "./tsconfig.json"
+  },
   "dependencies": {
-    "@kigu/biome": "workspace:^",
-    "@kigu/swc": "workspace:^",
-    "@kigu/tsconfig": "workspace:^",
     "@biomejs/biome": "^2.5.0",
     "@swc/cli": "^0.8.1",
     "@swc/core": "^1.15.41",

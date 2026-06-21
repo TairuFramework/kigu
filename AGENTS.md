@@ -6,7 +6,7 @@
 
 Two outputs, one repo:
 
-1. **npm config packages** (`packages/*`): `@kigu/tsconfig`, `@kigu/biome`, `@kigu/swc`, and `@kigu/dev` (toolchain preset). Other repos extend these.
+1. **npm config package** (`packages/dev`): `@kigu/dev` — a toolchain preset bundling the Biome, SWC, and TypeScript configs alongside the tools that consume them, so deps and configs stay in sync. Other repos extend these.
 2. **Claude Code plugin marketplace** (`.claude-plugin/marketplace.json` + `plugins/kigu/`): shared workflow skills (`dev-loop`, `project-loop`, `complete`, `archive`), the canonical `conventions` skill, `enkaku-packages`, and `discover-template`.
 
 ## Conventions
@@ -18,7 +18,7 @@ here or in consuming repos.
 
 ## How consuming repos use kigu
 
-- Add `@kigu/dev` as a devDependency; extend `@kigu/tsconfig/base.json`, `["@kigu/biome"]`, and `@kigu/swc/swc.json`.
+- Add `@kigu/dev` as a devDependency; extend `@kigu/dev/tsconfig.json`, `["@kigu/dev/biome.json"]`, and `@kigu/dev/swc.json`.
 - Reference the `kigu` marketplace and install the `kigu` plugin; add a local domain plugin per repo (instantiate `discover-template`).
 
 ## Guardrails

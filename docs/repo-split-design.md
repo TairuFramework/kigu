@@ -200,10 +200,9 @@ kigu/
   package.json              # private workspace root
   pnpm-workspace.yaml
   packages/                 # FACE 1 — npm-published config
-    tsconfig/               #   @kigu/tsconfig
-    biome/                  #   @kigu/biome
-    swc/                    #   @kigu/swc
-    dev/                    #   @kigu/dev  (toolchain devDep preset)
+    dev/                    #   @kigu/dev  (toolchain devDep preset:
+                            #   bundles biome.json + swc.json + tsconfig.json
+                            #   alongside the tools that consume them)
   .claude-plugin/
     marketplace.json        # FACE 2 — the plugin marketplace
   plugins/
@@ -218,9 +217,10 @@ kigu/
     repo-split-design.md    # this document
 ```
 
-- **Config (npm):** `@kigu/tsconfig`, `@kigu/biome`, `@kigu/swc` extended by each repo;
-  `@kigu/dev` is a single devDep that pulls the shared toolchain (biome, typescript, swc, turbo,
-  vitest) with central pinning. Config churn is devDep-only and never forces a consumer republish.
+- **Config (npm):** `@kigu/dev` is a single devDep that pulls the shared toolchain (biome,
+  typescript, swc, turbo, vitest) with central pinning **and** ships the configs they drive
+  (`@kigu/dev/biome.json`, `@kigu/dev/swc.json`, `@kigu/dev/tsconfig.json`), so the tools and
+  their configs version together. Config churn is devDep-only and never forces a consumer republish.
 - **AI assets (plugin marketplace):** a single `kigu` plugin bundles the shared workflow skills,
   conventions (as a skill — the source of truth, auto-loaded into agent context everywhere),
   base agents, and a `discover` template/generator.
