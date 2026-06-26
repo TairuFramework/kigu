@@ -6,6 +6,4 @@ allowBuilds:
   esbuild: true
 
 catalog:
-  '@biomejs/biome': ^2.5.0
-
-nodeLinker: hoisted
+  '@biomejs/biome': ^2.5.1

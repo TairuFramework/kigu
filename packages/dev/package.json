@@ -1,6 +1,6 @@
 {
   "name": "@kigu/dev",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "MIT",
   "description": "Shared dev toolchain preset",
   "repository": {
@@ -23,14 +23,14 @@
     "./tsconfig.json": "./tsconfig.json"
   },
   "dependencies": {
-    "@biomejs/biome": "^2.5.0",
+    "@biomejs/biome": "catalog:",
     "@swc/cli": "^0.8.1",
-    "@swc/core": "^1.15.41",
-    "@types/node": "^26.0.0",
+    "@swc/core": "^1.15.43",
+    "@types/node": "^26.0.1",
     "@vitest/ui": "^4.1.9",
     "del-cli": "^7.0.0",
     "tsx": "^4.22.4",
-    "turbo": "^2.9.18",
+    "turbo": "^2.10.0",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9"
   }
