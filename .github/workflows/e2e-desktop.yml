@@ -17,6 +17,13 @@ on:
         required: false
         default: '24'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   CI: true
   DO_NOT_TRACK: 1
@@ -25,11 +32,11 @@ jobs:
   test:
     name: on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         os: ${{ fromJSON(inputs.os) }}
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -39,6 +46,19 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
 
+      - name: Cache electron binary
+        uses: actions/cache@v6
+        with:
+          path: |
+            ~/.cache/electron
+            ~/AppData/Local/electron/Cache
+          key: electron-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
+      - name: Fetch electron binary
+        # allowBuilds.electron:false blocks electron's install script, so extract
+        # dist/ explicitly here (pnpm rebuild electron would be a no-op).
+        run: node node_modules/electron/install.js
+
       - name: Package app
         working-directory: ${{ inputs.working-directory }}
         run: pnpm run package
@@ -47,23 +67,16 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
         run: pnpm run test
 
-      - name: Upload Playwright Report
-        uses: actions/upload-artifact@v4
+      - name: Upload Playwright report
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report-${{ matrix.os }}
           path: ${{ inputs.working-directory }}/playwright-report/
 
-      - name: Upload Test Results
-        uses: actions/upload-artifact@v4
+      - name: Upload test results
+        uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: test-results-${{ matrix.os }}
           path: ${{ inputs.working-directory }}/test-results/
-
-      - name: Upload Screenshots
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: screenshots-${{ matrix.os }}
-          path: ${{ inputs.working-directory }}/screenshots/

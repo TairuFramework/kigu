@@ -18,6 +18,13 @@ on:
         required: false
         default: true
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   CI: true
   DO_NOT_TRACK: 1
@@ -26,7 +33,9 @@ jobs:
   build:
     name: on Node ${{ matrix.node }}
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     strategy:
+      fail-fast: false
       matrix:
         node: ${{ fromJSON(inputs.node-versions) }}
 

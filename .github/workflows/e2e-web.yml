@@ -12,6 +12,13 @@ on:
         required: false
         default: '24'
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   CI: true
   DO_NOT_TRACK: 1
@@ -19,6 +26,7 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -28,7 +36,14 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+
       - name: Install Playwright browsers
+        working-directory: ${{ inputs.working-directory }}
         run: pnpm exec playwright install --with-deps
 
       - name: Build app
