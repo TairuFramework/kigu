@@ -51,6 +51,7 @@ jobs:
         with:
           path: |
             ~/.cache/electron
+            ~/Library/Caches/electron
             ~/AppData/Local/electron/Cache
           key: electron-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
