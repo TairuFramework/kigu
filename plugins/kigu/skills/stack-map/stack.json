@@ -1,0 +1,79 @@
+{
+  "org": "TairuFramework",
+  "marketplace": "kigu",
+  "publishes": {
+    "@kigu/dev": "0.1.1",
+    "kigu-plugin": "0.1.0"
+  },
+  "repos": [
+    {
+      "name": "kigu",
+      "kanji": "器具",
+      "role": "tooling hub: configs + plugin marketplace + conventions",
+      "repo": "https://github.com/TairuFramework/kigu",
+      "docs": "docs/",
+      "domainPlugin": "kigu",
+      "dependsOn": []
+    },
+    {
+      "name": "sozai",
+      "scope": "@sozai",
+      "kanji": "素材",
+      "role": "core utilities + external-library wrappers",
+      "repo": "https://github.com/TairuFramework/sozai",
+      "docs": "docs/",
+      "domainPlugin": null,
+      "dependsOn": []
+    },
+    {
+      "name": "kokuin",
+      "scope": "@kokuin",
+      "kanji": "刻印",
+      "role": "identity / auth / keys",
+      "repo": "https://github.com/TairuFramework/kokuin",
+      "docs": "docs/",
+      "domainPlugin": "kokuin",
+      "dependsOn": ["sozai"]
+    },
+    {
+      "name": "enkaku",
+      "scope": "@enkaku",
+      "kanji": "遠隔",
+      "role": "RPC over multiple transports",
+      "repo": "https://github.com/TairuFramework/enkaku",
+      "docs": "docs/",
+      "domainPlugin": "enkaku",
+      "dependsOn": ["sozai", "kokuin"]
+    },
+    {
+      "name": "tejika",
+      "scope": "@tejika",
+      "kanji": "手近",
+      "role": "local-side foundation: CLI / process / server",
+      "repo": "https://github.com/TairuFramework/tejika",
+      "docs": "docs/",
+      "domainPlugin": "tejika",
+      "dependsOn": ["enkaku"]
+    },
+    {
+      "name": "kumiai",
+      "scope": "@kumiai",
+      "kanji": "組合",
+      "role": "MLS group messaging",
+      "repo": "https://github.com/TairuFramework/kumiai",
+      "docs": "docs/",
+      "domainPlugin": "kumiai",
+      "dependsOn": ["sozai", "kokuin", "enkaku"]
+    },
+    {
+      "name": "mokei",
+      "scope": "@mokei",
+      "kanji": "模型",
+      "role": "MCP toolkit: clients / servers / model providers + host monitoring",
+      "repo": "https://github.com/TairuFramework/mokei",
+      "docs": "docs/",
+      "domainPlugin": "mokei",
+      "dependsOn": ["sozai", "enkaku", "tejika"]
+    }
+  ]
+}
