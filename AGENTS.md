@@ -16,6 +16,9 @@ The canonical coding conventions live in the `conventions` skill
 replaces the old manually-propagated `SHARED.md`. Follow it for any code authored
 here or in consuming repos.
 
+Cross-repo routing — find a sibling repo's docs/packages, map dependencies, or check version
+drift — lives in the `stack-map` skill (`plugins/kigu/skills/stack-map/`).
+
 ## How consuming repos use kigu
 
 - Add `@kigu/dev` as a devDependency; extend `@kigu/dev/tsconfig.json`, `["@kigu/dev/biome.json"]`, and `@kigu/dev/swc.json`.
@@ -24,8 +27,7 @@ here or in consuming repos.
 
 ## Guardrails
 
-- pnpm only (never npm/npx).
-- `type` not `interface`; `Array<T>` not `T[]`; never `any`; capital `ID`/`HTTP`/`JWT`/`DID`; ES `#fields`, never `private`/`readonly`.
-- Do not edit generated files.
+See the `conventions` skill (canonical — do not restate). Repo-specific only: pnpm only; no
+runtime code is imported from here; do not edit generated files.
 
 See `docs/repo-split-design.md` for the broader monorepo-split architecture.
