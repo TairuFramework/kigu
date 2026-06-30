@@ -122,7 +122,7 @@ Run (from kigu repo root):
 node -e "const fs=require('fs');const s=JSON.parse(fs.readFileSync('plugins/kigu/skills/stack-map/stack.json','utf8'));const n=new Set(s.repos.map(r=>r.name));for(const r of s.repos){for(const d of r.dependsOn){if(d===r.name)throw new Error('self-dep '+r.name);if(!n.has(d))throw new Error('dangling '+d+' in '+r.name);}}console.log('ok',s.repos.length,'repos, all deps resolve');"
 ```
 
-Expected: `ok 8 repos, all deps resolve`
+Expected: `ok 7 repos, all deps resolve`
 (Cycle-freedom is guaranteed by construction: every `dependsOn` points to a repo earlier in the list. Confirm by eye.)
 
 - [ ] **Step 3: Lint**
