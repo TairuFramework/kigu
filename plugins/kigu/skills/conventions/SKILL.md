@@ -361,3 +361,24 @@ Turn tasks into verifiable goals, then loop until verified.
 - "Refactor X" -> "Ensure tests pass before and after"
 
 Strong success criteria let the agent loop independently; weak criteria ("make it work") force constant clarification. This complements the TDD and verification-before-completion workflows, and the multi-stage `/dev-loop` lifecycle (section 8).
+
+## 10. Root AGENTS.md shape
+
+Every repo's root `AGENTS.md` is thin and repo-specific. It never restates the guardrails -- those
+live in this skill -- and `CLAUDE.md` is just `@AGENTS.md`. Changing a shared rule then touches
+only this skill, never every repo.
+
+Shape:
+
+```markdown
+# <repo>
+
+> Conventions: kigu `conventions` skill (canonical -- do not restate).
+> Stack map / sibling docs: kigu `stack-map` skill.
+
+## What this repo is
+<one paragraph, repo-specific>
+
+## Guardrails
+See the `conventions` skill. Repo-specific only: <anything genuinely local, e.g. pnpm only>.
+```
