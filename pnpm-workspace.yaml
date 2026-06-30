@@ -7,3 +7,9 @@ allowBuilds:
 
 catalog:
   '@biomejs/biome': ^2.5.1
+
+catalogMode: prefer
+
+supportedArchitectures:
+  cpu: [ current ]
+  os: [ current ]
