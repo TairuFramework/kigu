@@ -9,7 +9,9 @@ Orchestrate project-level management: priorities, roadmap, architecture review, 
 
 ## Path Context
 
-All paths assume this skill is running inside a consuming repo (sakui, enkaku, kubun, mokei). The agents repo contains no plans hierarchy or architecture docs — project-loop is propagated from agents but only operates in consuming repos.
+All paths assume this skill runs inside a stack repo (sozai, kokuin, enkaku, tejika,
+kumiai, mokei). The kigu hub repo carries no plans hierarchy of its own -- project-loop
+is shared from the kigu plugin but operates in the consuming repo's `docs/agents/plans/`.
 
 ## Branch Expectations
 
@@ -23,7 +25,7 @@ Check project state and present a concise summary:
 
 1. Check for in-flight dev work (`docs/superpowers/specs/`, `docs/superpowers/plans/`). If found, suggest `/dev-loop` instead, but don't force it.
 2. Read `docs/agents/plans/project-loop-state.md` for last activity timestamps. If it doesn't exist, note this (first run).
-3. Scan `docs/agents/plans/next/`, `docs/agents/plans/backlog/`, `docs/agents/plans/completed/`, `docs/agents/plans/roadmap.md`, `docs/agents/plans/milestones/`.
+3. Scan `docs/agents/plans/next/`, `docs/agents/plans/backlog/`, `docs/agents/plans/completed/`, `docs/agents/plans/roadmap.md`, `docs/agents/plans/milestones/`. Folders and the roadmap/state files may not exist yet -- they are created on demand; treat missing ones as empty, not errors.
 4. Present summary as a few bullet points (not a wall of text).
 
 Based on findings, suggest relevant modes:
@@ -65,7 +67,7 @@ Three sub-checks, presented together as a findings list:
 - Flag mismatches (missing packages, renamed dirs, outdated diagrams)
 
 **Conventions:**
-- Spot-check a sample of code files against `docs/agents/conventions.md` rules
+- Spot-check a sample of code files against the `conventions` skill rules
 - Not exhaustive — sample-based to catch drift
 
 **Completed follow-ups:**
@@ -106,7 +108,7 @@ Keep the roadmap concise — goals and sequencing, not detailed specs.
 
 ## State File
 
-`docs/agents/plans/project-loop-state.md` tracks when each activity was last performed. Repo-local (not propagated from agents repo). Created on first write.
+`docs/agents/plans/project-loop-state.md` tracks when each activity was last performed. Repo-local, created on first write.
 
 Format:
 
@@ -137,13 +139,13 @@ Format:
 | `docs/agents/plans/backlog/` | Future work |
 | `docs/agents/plans/completed/` | Recent completions |
 | `docs/agents/plans/archive/` | Historical summaries |
-| `docs/agents/plans/milestones/` | Detailed design docs for current focus areas |
+| `docs/agents/plans/milestones/` | Optional -- detailed design docs for current focus areas |
 | `docs/superpowers/specs/` | In-flight design specs |
 | `docs/superpowers/plans/` | In-flight implementation plans |
 | `docs/agents/architecture.md` | Architecture documentation |
 | `AGENTS.md` | Project agent instructions |
-| `docs/agents/conventions.md` | Code conventions |
-| `docs/agents/development.md` | Development practices |
+| the `conventions` skill | Canonical code conventions (kigu plugin) |
+| the `development` skill | Canonical build/test/release workflow (kigu plugin) |
 
 ## Integration
 
