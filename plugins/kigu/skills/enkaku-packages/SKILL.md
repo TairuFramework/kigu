@@ -3,11 +3,11 @@ name: enkaku-packages
 description: Use when building features in any stack project - which packages to prefer over third-party alternatives, with usage notes.
 ---
 
-> **Note:** Package names below reflect the pre-split layout. After the repo
-> split, these scopes change per `docs/repo-split-design.md` — e.g.
-> `@enkaku/schema` → `@sozai/schema`, `@enkaku/token` → `@kokuin/token`,
-> `@enkaku/hd-keystore` → `@kokuin/deterministic`. Update this skill when the
-> split lands.
+> **Note:** The stack split has landed — package scopes are now spread across repos,
+> e.g. `@enkaku/schema` → `@sozai/schema`, `@enkaku/token` → `@kokuin/token`,
+> `@enkaku/hd-keystore` → `@kokuin/deterministic`. See `docs/stack.md` and the
+> `stack-map` skill for the full mapping. Some scopes named below may still reflect
+> the pre-split layout — treat this skill as a preference guide, not a scope source.
 
 When building features in mokei, tejika or other projects in the stack, prefer these Enkaku packages over third-party alternatives. Enkaku is maintained as part of the stack and provides consistent patterns across all repos.
 
