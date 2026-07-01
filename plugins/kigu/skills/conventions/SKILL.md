@@ -382,3 +382,38 @@ Shape:
 ## Guardrails
 See the `conventions` skill. Repo-specific only: <anything genuinely local, e.g. pnpm only>.
 ```
+
+## 11. Canonical repo layout
+
+Every stack repo matches one shape. Shared guidance is sourced from kigu skills, not copied.
+
+### Root files
+- `AGENTS.md` -- thin pointer (see §10). Source of truth for repo context.
+- `CLAUDE.md` -- single line `@AGENTS.md`.
+- `README.md` -- human-facing.
+- `.changeset/` -- present where the repo publishes packages.
+
+### docs/ tree
+```
+docs/
+  index.md              # repo doc entry; links the stack overview (TairuFramework/kigu/docs/stack.md)
+  agents/
+    architecture.md     # repo-specific
+    development.md       # thin: pointer to the `development` skill + repo-specific deltas only
+    plans/              # permanent planning -- project-loop/dev-loop/complete/archive operate here
+      next/ backlog/ completed/ archive/   # created on demand (no placeholder dirs)
+      milestones/                          # optional
+      roadmap.md  project-loop-state.md    # created on first project-loop write
+  reference/            # domain docs
+  guides/               # optional, user-facing
+  superpowers/          # EPHEMERAL -- specs/ + plans/, branch-only, deleted before merge
+```
+
+### Rules
+- Conventions are NOT duplicated per repo -- this skill is canonical. No `docs/agents/conventions.md`.
+- Shared build/test/release workflow lives in the `development` skill. Each repo's
+  `docs/agents/development.md` is a thin pointer plus repo-specific notes only.
+- Domain reference docs live under `docs/reference/` (one name -- not `domains/` or `capabilities/`).
+- Plan folders are created on demand; never scaffold empty ones.
+- The shared skills load because each repo's committed `.claude/settings.json` enables the
+  kigu marketplace and the `kigu` plugin.
