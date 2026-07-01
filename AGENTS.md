@@ -30,4 +30,4 @@ drift — lives in the `stack-map` skill (`plugins/kigu/skills/stack-map/`).
 See the `conventions` skill (canonical — do not restate). Repo-specific only: pnpm only; no
 runtime code is imported from here; do not edit generated files.
 
-See `docs/repo-split-design.md` for the broader monorepo-split architecture.
+See `docs/stack.md` for the stack overview (roles, dependency graph, how the repos hold together).
