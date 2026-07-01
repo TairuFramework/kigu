@@ -227,7 +227,7 @@ See the `conventions` skill. Repo-specific only: <anything genuinely local, e.g.
 Every stack repo matches one shape. Shared guidance is sourced from kigu skills, not copied.
 
 ### Root files
-- `AGENTS.md` -- thin pointer (see §10). Source of truth for repo context.
+- `AGENTS.md` -- thin pointer (see §6). Source of truth for repo context.
 - `CLAUDE.md` -- single line `@AGENTS.md`.
 - `README.md` -- human-facing.
 - `.changeset/` -- present where the repo publishes packages.

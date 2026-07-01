@@ -58,6 +58,16 @@ Shared across all stack repos, pinned via `@kigu/dev`:
 | SWC | JavaScript compilation |
 | TypeScript | Type checking + declarations (strict, ES2025) |
 
+## Release and versioning
+
+- Versioning is per-package via changesets -- no hard `fixed` lock. Coupled packages are bumped
+  together by the releaser's judgement, not enforced config.
+- Cross-repo dependencies are published `^` semver ranges, never `workspace:`. Develop across a
+  repo boundary via a canary/prerelease publish.
+- 1.0 promotion is per-repo, whole: a repo goes 1.0 as a unit once its surface is stable, and
+  every package in it goes 1.0 together (SDK-bound packages included -- 1.0 is semver discipline,
+  they can still major often).
+
 ## Planning and documentation
 
 Persistent plan artifacts live in `docs/agents/plans/`; ephemeral working docs in `docs/superpowers/`.
