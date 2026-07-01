@@ -179,6 +179,8 @@ Write the minimum code that solves the problem. Nothing speculative.
 - No "flexibility" or "configurability" that was not requested.
 - No error handling for impossible scenarios.
 - If 200 lines could be 50, rewrite it.
+- Before adding a third-party dependency or writing new utility code, check the `stack-packages`
+  skill and prefer a stack package when one fits (e.g. `@sozai/schema` over Zod).
 
 This is the same ethos as the Placeholder Values rule (section 1): do not add structure to satisfy an imagined requirement any more than you add fake values to satisfy the type checker.
 
