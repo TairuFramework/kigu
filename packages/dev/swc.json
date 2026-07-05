@@ -8,9 +8,7 @@
     "transform": {
       "optimizer": {
         "globals": {
-          "vars": {
-            "process.env.NODE_ENV": "production"
-          }
+          "envs": ["NODE_ENV"]
         }
       },
       "react": {
