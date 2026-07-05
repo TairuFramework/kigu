@@ -18,7 +18,3 @@ Make kubun's question-based execution loop a stack-shared skill (`kigu:learning-
 - **Question-plan format lives inside the skill** (`references/question-plans.md`), genericized from kubun's `implementation-process.md`; repos add their own domain decision framework (e.g. kubun's UX → DX → implementation chain) in local `docs/agents/`.
 - **Probe dispatch hardened with superpowers subagent-driven-development patterns:** file handoffs (per-question brief/report files in an ephemeral probes directory, subagent returns only status + commits + summary + concerns), a status contract (DONE / DONE_WITH_CONCERNS / NEEDS_CONTEXT / BLOCKED, where BLOCKED is the finding — never "try harder"), explicit model selection per probe complexity, and parallel batching for read-only research questions only (implementation probes stay serial).
 - **Verification was review-based plus subagent comprehension tests** (mode routing and loop-mechanics scenarios); ambiguities the tests surfaced were patched (batch-cycle mapping, two-strikes scoping, probe file naming/cleanup).
-
-## Follow-up (kubun repo)
-
-Kubun still carries local forks: delete `.claude/skills/execute-learning-loop/` and `.claude/skills/dev-loop/`, rely on the kigu plugin versions, and slim `docs/agents/implementation-process.md` to kubun-specific domain framing only.
