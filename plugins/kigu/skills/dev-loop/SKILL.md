@@ -24,6 +24,17 @@ Based on findings, present:
 
 When the user picks a `next/` or `backlog/` item: the item serves as input context for brainstorming, not as a plan itself. Delete the original file from `next/`/`backlog/` once brainstorming produces a spec. If the user abandons the idea during brainstorming, leave the original item in place.
 
+## Plan Modes
+
+Two plan formats. The planning stage picks one; the executing stage routes on it.
+
+| Mode | Fits when | Plan format | Executing skill |
+|------|-----------|-------------|-----------------|
+| `tasks` | Work well understood, tasks mechanical and independent, spec stable | Task list via `superpowers:writing-plans` | `superpowers:subagent-driven-development` (or `superpowers:executing-plans` without subagent support) |
+| `learning-loop` | Unvalidated design assumptions, spec likely to move, integration unknowns, user wants feedback at each step | Question-based, written collaboratively (see `kigu:learning-loop` references/question-plans.md) | `kigu:learning-loop` |
+
+At the start of the planning stage, assess the work against these criteria, recommend a mode, and confirm the choice with the user before writing the plan. Record it in the plan file as `**Mode:** tasks` or `**Mode:** learning-loop` beside `**Stage:**`. If an existing plan has no `**Mode:**` field, ask the user which mode applies and add the field.
+
 ## Stages
 
 Guide through stages in order, invoking the appropriate skill at each:
@@ -31,8 +42,8 @@ Guide through stages in order, invoking the appropriate skill at each:
 | Stage | Skill | State signal |
 |-------|-------|--------------|
 | brainstorming | `superpowers:brainstorming` | Spec exists in `docs/superpowers/specs/`, no plan |
-| planning | `superpowers:writing-plans` | `**Stage:** planning` in plan file |
-| executing | `superpowers:executing-plans` | `**Stage:** executing` |
+| planning | by mode (see Plan Modes) | `**Stage:** planning` in plan file |
+| executing | by mode (see Plan Modes) | `**Stage:** executing` |
 | reviewing | `superpowers:requesting-code-review` | `**Stage:** reviewing` |
 | qa | (prompt user to test) | `**Stage:** qa` |
 | completing | `kigu:complete` | `**Stage:** completing` |
@@ -50,10 +61,18 @@ The `superpowers:*` skills come from the superpowers plugin. If they are not ava
 Invoke `superpowers:brainstorming`. Once a spec is produced in `docs/superpowers/specs/`, this stage is complete.
 
 ### planning
-Invoke `superpowers:writing-plans`. The plan file is created in `docs/superpowers/plans/` with `**Stage:** planning`. Once the plan is written and approved, update Stage to `executing` and commit.
+Pick the mode first (see Plan Modes) and confirm with the user. Then:
+- `tasks` — invoke `superpowers:writing-plans`.
+- `learning-loop` — write the plan collaboratively with the user in the question-based format (see `kigu:learning-loop` references/question-plans.md). Do NOT use `superpowers:writing-plans`.
+
+The plan file is created in `docs/superpowers/plans/` with `**Stage:** planning` and the chosen `**Mode:**`. Once the plan is written and approved, update Stage to `executing` and commit.
 
 ### executing
-Invoke `superpowers:executing-plans` (or `superpowers:subagent-driven-development` if subagents are available). Work through the plan tasks. Once all tasks are checked, update Stage to `reviewing` and commit.
+Route on the plan's `**Mode:**` field:
+- `tasks` — invoke `superpowers:subagent-driven-development` (or `superpowers:executing-plans` without subagent support). Work through the plan tasks.
+- `learning-loop` — invoke `kigu:learning-loop`. Work through the plan's questions; each requires user feedback before the next.
+
+Once all tasks are checked (or all phases answered and exit criteria met), update Stage to `reviewing` and commit.
 
 ### reviewing
 Invoke `superpowers:requesting-code-review`. Address feedback. Once review passes, update Stage to `qa` and commit.

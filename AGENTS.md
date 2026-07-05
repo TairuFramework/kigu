@@ -7,7 +7,7 @@
 Two outputs, one repo:
 
 1. **npm config package** (`packages/dev`): `@kigu/dev` — a toolchain preset bundling the Biome, SWC, and TypeScript configs alongside the tools that consume them, so deps and configs stay in sync. Other repos extend these.
-2. **Claude Code plugin marketplace** (`.claude-plugin/marketplace.json` + `plugins/kigu/`): shared workflow skills (`dev-loop`, `project-loop`, `complete`, `archive`, `audit`), the canonical `conventions` and `development` skills, `stack-map`, `stack-packages`, and `discover-template`.
+2. **Claude Code plugin marketplace** (`.claude-plugin/marketplace.json` + `plugins/kigu/`): shared workflow skills (`dev-loop`, `learning-loop`, `project-loop`, `complete`, `archive`, `audit`), the canonical `conventions` and `development` skills, `stack-map`, `stack-packages`, and `discover-template`.
 
 ## Conventions
 
