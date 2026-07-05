@@ -10,8 +10,8 @@ Orchestrate project-level management: priorities, roadmap, architecture review, 
 ## Path Context
 
 All paths assume this skill runs inside a stack repo (any repo listed in the `kigu:stack-map`
-skill's `stack.json`). The kigu hub repo carries no plans hierarchy of its own -- project-loop
-is shared from the kigu plugin but operates in the consuming repo's `docs/agents/plans/`.
+skill's `stack.json`). project-loop is shared from the kigu plugin but always operates in the
+current repo's own `docs/agents/plans/` -- including kigu itself.
 
 ## Branch Expectations
 

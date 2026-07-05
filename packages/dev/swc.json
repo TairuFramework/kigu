@@ -3,7 +3,7 @@
     "parser": {
       "syntax": "typescript"
     },
-    "target": "esnext",
+    "target": "es2025",
     "transform": {
       "optimizer": {
         "globals": {

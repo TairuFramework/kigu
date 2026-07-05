@@ -21,7 +21,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # github.workflow resolves to the caller's name; include this reusable
+  # workflow's identity so sibling reusable calls in one caller don't collide.
+  group: ${{ github.workflow }}-e2e-desktop-${{ github.ref }}
   cancel-in-progress: true
 
 env:

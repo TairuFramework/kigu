@@ -5,4 +5,5 @@
 - **Stack overview:** [stack.md](./stack.md)
 - **Conventions & development:** the `conventions` and `development` skills in `plugins/kigu/skills/`
 - **Cross-repo routing:** the `stack-map` skill (`plugins/kigu/skills/stack-map/`)
+- **Shared CI:** [.github/README.md](../.github/README.md) — reusable workflows and the `setup` action
 - **Planning:** [agents/plans/](./agents/plans/)

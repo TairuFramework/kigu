@@ -16,7 +16,9 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # github.workflow resolves to the caller's name; include this reusable
+  # workflow's identity so sibling reusable calls in one caller don't collide.
+  group: ${{ github.workflow }}-e2e-android-${{ github.ref }}
   cancel-in-progress: true
 
 env:
@@ -91,4 +93,4 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: maestro-screenshots
-          path: "*.png"
+          path: ${{ inputs.working-directory }}/*.png

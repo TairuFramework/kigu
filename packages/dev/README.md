@@ -16,3 +16,6 @@ Then extend the configs:
 - **TypeScript** — `"extends": "@kigu/dev/tsconfig.json"`
 - **Biome** — `"extends": ["@kigu/dev/biome.json"]`
 - **SWC** — `"extends": "@kigu/dev/swc.json"`
+
+Note: the tsconfig sets `"types": []`, so ambient type packages are opt-in —
+add e.g. `"types": ["node"]` in a package that uses Node.js globals.
