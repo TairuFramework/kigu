@@ -1,6 +1,6 @@
 ---
 name: dev-loop
-description: Use when driving a feature through its full development cycle - detects in-progress work and resumes at the correct stage.
+description: Use when starting or resuming feature work in a stack repo, at any stage of the development cycle.
 ---
 
 # Dev Loop
@@ -11,7 +11,7 @@ Orchestrate the full development cycle with session resumption.
 
 Before starting anything new, detect in-progress work:
 
-1. Check `docs/superpowers/plans/` for plan files. If found, read the `**Stage:**` field to determine current stage.
+1. Check `docs/superpowers/plans/` for plan files. If found, read the `**Stage:**` field to determine current stage. If a plan file has no `**Stage:**` field, treat it as `executing` (the most common state for a plan mid-flight) and confirm with the user before proceeding.
 2. Check `docs/superpowers/specs/` for spec files without a corresponding plan in `docs/superpowers/plans/`. If found, brainstorming is in progress (no Stage field exists yet).
 3. Check git branch. If on a feature branch with commits ahead of main, work is in flight.
 4. Check `docs/agents/plans/next/` for prioritised work.
@@ -35,10 +35,12 @@ Guide through stages in order, invoking the appropriate skill at each:
 | executing | `superpowers:executing-plans` | `**Stage:** executing` |
 | reviewing | `superpowers:requesting-code-review` | `**Stage:** reviewing` |
 | qa | (prompt user to test) | `**Stage:** qa` |
-| completing | `/complete` | `**Stage:** completing` |
+| completing | `kigu:complete` | `**Stage:** completing` |
 | finishing | `superpowers:finishing-a-development-branch` | `**Stage:** finishing` |
 
-Stages are not atomic -- `executing` and `reviewing` can span multiple sessions. Update `**Stage:**` in the plan file when a stage completes (not during), then commit.
+Stages are not atomic -- `executing` and `reviewing` can span multiple sessions. Update `**Stage:**` in the plan file when a stage completes (not during), then commit. The `**Stage:**` field lives only in the plan file -- never add one to the spec.
+
+The `superpowers:*` skills come from the superpowers plugin. If they are not available in the current session, tell the user the plugin is missing rather than improvising the stage's workflow.
 
 ## Stage Details
 
@@ -58,7 +60,7 @@ Invoke `superpowers:requesting-code-review`. Address feedback. Once review passe
 Prompt the user to test. Provide test guidance from the plan if available. Wait for user confirmation that QA passes. Once confirmed, update Stage to `completing` and commit.
 
 ### completing
-Invoke `/complete` skill. This summarises the finished plan, writes to `docs/agents/plans/completed/`, and cleans up ephemeral files. Once complete, update Stage to `finishing` and commit.
+Invoke the `kigu:complete` skill. This summarises the finished plan, writes to `docs/agents/plans/completed/`, and cleans up ephemeral files. Once complete, update Stage to `finishing` and commit.
 
 ### finishing
 Invoke `superpowers:finishing-a-development-branch`. This handles merge/PR/cleanup.

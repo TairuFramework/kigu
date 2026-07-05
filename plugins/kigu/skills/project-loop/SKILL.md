@@ -9,8 +9,8 @@ Orchestrate project-level management: priorities, roadmap, architecture review, 
 
 ## Path Context
 
-All paths assume this skill runs inside a stack repo (sozai, kokuin, enkaku, tejika,
-kumiai, mokei). The kigu hub repo carries no plans hierarchy of its own -- project-loop
+All paths assume this skill runs inside a stack repo (any repo listed in the `kigu:stack-map`
+skill's `stack.json`). The kigu hub repo carries no plans hierarchy of its own -- project-loop
 is shared from the kigu plugin but operates in the consuming repo's `docs/agents/plans/`.
 
 ## Branch Expectations
@@ -23,7 +23,7 @@ Project-loop operates on the main branch. Write operations (triage, roadmap, sta
 
 Check project state and present a concise summary:
 
-1. Check for in-flight dev work (`docs/superpowers/specs/`, `docs/superpowers/plans/`). If found, suggest `/dev-loop` instead, but don't force it.
+1. Check for in-flight dev work (`docs/superpowers/specs/`, `docs/superpowers/plans/`). If found, suggest `kigu:dev-loop` instead, but don't force it.
 2. Read `docs/agents/plans/project-loop-state.md` for last activity timestamps. If it doesn't exist, note this (first run).
 3. Scan `docs/agents/plans/next/`, `docs/agents/plans/backlog/`, `docs/agents/plans/completed/`, `docs/agents/plans/roadmap.md`, `docs/agents/plans/milestones/`. Folders and the roadmap/state files may not exist yet -- they are created on demand; treat missing ones as empty, not errors.
 4. Present summary as a few bullet points (not a wall of text).
@@ -34,11 +34,11 @@ Based on findings, suggest relevant modes:
 - **Review** — if last review was more than 2 weeks ago per the state file, or if no review has ever been recorded
 - **Roadmap** — if no `roadmap.md` exists, or roadmap file is stale, or significant work has been completed since last roadmap update
 
-The user picks a mode, skips to `/dev-loop`, or states what they want. Modes are suggestions, not gates — the user can always override.
+The user picks a mode, skips to `kigu:dev-loop`, or states what they want. Modes are suggestions, not gates — the user can always override.
 
 ### 2. Run Selected Mode
 
-Execute the mode the user chose. After any mode completes, suggest the next natural action — including handing off to `/dev-loop` if a concrete feature was identified.
+Execute the mode the user chose. After any mode completes, suggest the next natural action — including handing off to `kigu:dev-loop` if a concrete feature was identified.
 
 ## Modes
 
@@ -52,7 +52,7 @@ Execute the mode the user chose. After any mode completes, suggest the next natu
    - Remove (no longer relevant)
    - Rewrite (outdated description)
    - Merge (duplicates another item)
-4. Wait for user approval on each action
+4. Present all proposed actions together; the user approves as a batch or per item
 5. Execute approved actions (file moves, edits, deletes)
 6. Update `docs/agents/plans/project-loop-state.md` with triage timestamp
 7. Commit with message: `docs: triage plans`
@@ -67,7 +67,7 @@ Three sub-checks, presented together as a findings list:
 - Flag mismatches (missing packages, renamed dirs, outdated diagrams)
 
 **Conventions:**
-- Spot-check a sample of code files against the `conventions` skill rules
+- Spot-check a sample of code files against the `kigu:conventions` skill rules
 - Not exhaustive — sample-based to catch drift
 
 **Completed follow-ups:**
@@ -144,16 +144,16 @@ Format:
 | `docs/superpowers/plans/` | In-flight implementation plans |
 | `docs/agents/architecture.md` | Architecture documentation |
 | `AGENTS.md` | Project agent instructions |
-| the `conventions` skill | Canonical code conventions (kigu plugin) |
-| the `development` skill | Canonical build/test/release workflow (kigu plugin) |
+| the `kigu:conventions` skill | Canonical code conventions (kigu plugin) |
+| the `kigu:development` skill | Canonical build/test/release workflow (kigu plugin) |
 
 ## Integration
 
 Project-loop and dev-loop are peers. Either can be invoked directly:
-- `/project-loop` — big-picture management, can delegate down to dev-loop
-- `/dev-loop` — feature implementation, invoked when you know what to build or have work in progress
+- `kigu:project-loop` — big-picture management, can delegate down to dev-loop
+- `kigu:dev-loop` — feature implementation, invoked when you know what to build or have work in progress
 
-Any time the conversation narrows to "let's build X", suggest invoking `/dev-loop`. If triage or roadmap surfaces a concrete next item and the user wants to start it, same hand-off. Project-loop may suggest dev-loop; dev-loop never invokes project-loop.
+Any time the conversation narrows to "let's build X", suggest invoking `kigu:dev-loop`. If triage or roadmap surfaces a concrete next item and the user wants to start it, same hand-off. Project-loop may suggest dev-loop; dev-loop never invokes project-loop.
 
 ## Boundaries
 

@@ -3,14 +3,16 @@ name: stack-packages
 description: Use when building features in any stack project - which stack packages to prefer over third-party alternatives, with usage notes.
 ---
 
+# Stack packages
+
+First-party packages to prefer over third-party alternatives when building features in any
+stack project. They are maintained as part of the stack and provide consistent patterns
+across all repos.
+
 > **Scopes:** these packages live across the split stack — core in `@sozai`, identity/keys in
 > `@kokuin`, RPC in `@enkaku`, MLS/hub in `@kumiai`. The scopes below reflect the current
-> layout; `stack.json` and the `stack-map` skill are the authoritative source for scopes and
+> layout; `stack.json` and the `kigu:stack-map` skill are the authoritative source for scopes and
 > cross-repo dependencies.
-
-When building features in mokei, tejika, or other projects in the stack, prefer these stack
-packages over third-party alternatives. They are maintained as part of the stack and provide
-consistent patterns across all repos.
 
 ---
 
@@ -41,6 +43,22 @@ Replaces Zod for schema validation. Built on AJV with full JSON Schema support.
 - Supports Standard Schema specification for interoperability
 
 **When to use:** Any place you need runtime validation of data shapes -- API inputs, configuration objects, protocol messages. Use this instead of Zod or Yup.
+
+```typescript
+import { createValidator, type FromSchema } from '@sozai/schema'
+
+const schema = {
+  $id: 'test',
+  type: 'object',
+  properties: { test: { type: 'boolean' } },
+  required: ['test'],
+  additionalProperties: false,
+} as const
+
+const validator = createValidator(schema)
+type Test = FromSchema<typeof schema> // { test: boolean }
+const result = validator({ test: true }) // { value: { test: true } } or ValidationError
+```
 
 ### `@sozai/event` -- Event Emitting
 
@@ -78,6 +96,15 @@ Replaces jsonwebtoken, jose, or custom JWT/JWE implementations.
 
 **When to use:** Authentication tokens, signed payloads, message-level encryption beyond transport TLS, any scenario requiring cryptographic verification or confidentiality. Use this instead of jsonwebtoken or jose.
 
+```typescript
+import { randomIdentity, verifyToken } from '@kokuin/token'
+
+const identity = randomIdentity()
+const token = await identity.signToken({ test: true })
+const verified = await verifyToken(token)
+// verified.payload.test === true, verified.payload.iss === identity.id
+```
+
 ### `@enkaku/protocol` + `@enkaku/client` + `@enkaku/server` -- RPC Framework
 
 Replaces custom RPC implementations, tRPC, or hand-rolled request/response patterns.
@@ -93,6 +120,29 @@ Four procedure types:
 - **Channel**: Bidirectional streaming
 
 **When to use:** Any client-server communication. Define the protocol first, then derive fully-typed client and server implementations. Use with any transport layer (HTTP, WebSocket, Node streams, in-process).
+
+```typescript
+import type { AnyClientMessageOf, AnyServerMessageOf, ProtocolDefinition } from '@enkaku/protocol'
+import { Client } from '@enkaku/client'
+import { type RequestHandler, serve } from '@enkaku/server'
+import { DirectTransports } from '@enkaku/transport'
+import { randomIdentity } from '@kokuin/token'
+
+const protocol = {
+  test: { type: 'request', result: { type: 'string' } },
+} as const satisfies ProtocolDefinition
+type Protocol = typeof protocol
+
+const transports = new DirectTransports<AnyServerMessageOf<Protocol>, AnyClientMessageOf<Protocol>>()
+const handler: RequestHandler<Protocol, 'test'> = () => 'OK'
+serve<Protocol>({ handlers: { test: handler }, identity: randomIdentity(), protocol, transport: transports.server })
+
+const client = new Client<Protocol>({ transport: transports.client })
+await client.request('test') // 'OK'
+```
+
+For in-process use without wiring transports, `@enkaku/standalone` collapses this:
+`standalone<Protocol>(handlers, { identity })` returns a ready client.
 
 ### `@sozai/codec` -- Encoding/Decoding
 

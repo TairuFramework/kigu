@@ -1,6 +1,6 @@
 ---
 name: complete
-description: Use when finishing implemented work - summarise finished work and transition from ephemeral plan storage to persistent plan storage.
+description: Use when finishing implemented work, before merging or finishing a feature branch.
 ---
 
 # Complete Plan
@@ -21,7 +21,7 @@ Before step 8, grep the files you wrote for `docs/superpowers` — any hit is a 
 
 ## Process
 
-1. **Find the plan and spec.** Read the plan from `docs/superpowers/plans/` and spec from `docs/superpowers/specs/`. If multiple files exist, ask the user which to complete.
+1. **Find the plan and spec.** Read the plan from `docs/superpowers/plans/` and spec from `docs/superpowers/specs/`. If multiple files exist, ask the user which to complete. If only one of the two exists, proceed with what is there (note the gap in the summary). If neither exists, report there is nothing to complete and stop.
 
 2. **Verify completion.** Check that all plan tasks are checked and tests are passing.
 
@@ -44,8 +44,9 @@ Before step 8, grep the files you wrote for `docs/superpowers` — any hit is a 
 7. **Extract follow-on work.** If there is remaining or follow-on work:
    - High-priority items go to `docs/agents/plans/next/`
    - Low-priority items go to `docs/agents/plans/backlog/`
+   - Filename: `YYYY-MM-DD-feature-name.md` (today's date, kebab-case slug, no status suffix)
    - These are persistent: self-contained, no `docs/superpowers/` references (see CRITICAL above).
 
-8. **Clean up ephemeral files.** First `grep -rn "docs/superpowers" docs/agents/plans/` for the files you just wrote — any hit is a dangling reference, fix it before deleting. Then delete the plan from `docs/superpowers/plans/` and the spec from `docs/superpowers/specs/`.
+8. **Clean up ephemeral files.** First `grep -rn "docs/superpowers" docs/agents/plans/` — a hit in a file you wrote in steps 6-7 is a dangling reference, fix it before deleting. A hit in a file you did not touch is pre-existing: flag it to the user, do not fix it in this pass. Then delete the plan from `docs/superpowers/plans/` and the spec from `docs/superpowers/specs/`.
 
 9. **Commit.** Stage all changes and commit with message: `docs: complete plan for <feature>`

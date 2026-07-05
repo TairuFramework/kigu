@@ -39,7 +39,7 @@ Dependencies:
 
 ## Conventions
 
-Canonical coding rules are NOT here — they live in the `conventions` skill (also in the kigu
+Canonical coding rules are NOT here — they live in the `kigu:conventions` skill (also in the kigu
 plugin, already in context). This skill only routes; it never restates rules.
 
 ## Version drift check (on request)
@@ -55,4 +55,4 @@ When asked whether the working repo is current:
 `stack.json` is hand-edited. Keep `repos` a flat list; encode stack position only via `dependsOn`
 (sibling names that already exist in the list — no dangling references, and the graph stays
 acyclic, i.e. deps point downward only). Every repo's root `AGENTS.md` follows the thin-pointer
-shape documented in the `conventions` skill.
+shape documented in the `kigu:conventions` skill.

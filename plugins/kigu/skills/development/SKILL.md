@@ -78,7 +78,7 @@ docs/superpowers/
   specs/    # brainstorming design specs
   plans/    # implementation plans
 ```
-Deleted before the branch merges to main -- the `/complete` skill handles cleanup.
+Deleted before the branch merges to main -- the `kigu:complete` skill handles cleanup.
 
 ### Persistent (on main)
 ```
@@ -99,20 +99,22 @@ Folders are created on demand -- a repo with no finished work simply has no `com
 3. Execute on a feature branch.
 4. Review.
 5. QA.
-6. Complete -- summary to `docs/agents/plans/completed/`, ephemeral files cleaned (`/complete`).
+6. Complete -- summary to `docs/agents/plans/completed/`, ephemeral files cleaned (`kigu:complete`).
 7. Finish -- merge or PR.
-8. Archive -- consolidate completed plans into monthly summaries (`/archive`).
+8. Archive -- consolidate completed plans into monthly summaries (`kigu:archive`).
 
 ### Plan statuses
-Filename suffix and a `**Status:**` line near the top: `complete`, `partial`, `superseded`, `cancelled`.
-Completed/next/backlog files use `YYYY-MM-DD-slug.<status>.md`; archive files use `YYYY-MM-archive-summary.md`.
+Statuses apply to completed plans only: `complete`, `partial`, `superseded`, `cancelled`.
+Files in `completed/` use `YYYY-MM-DD-slug.<status>.md` plus a `**Status:**` line near the top.
+Files in `next/` and `backlog/` use `YYYY-MM-DD-slug.md` -- no status suffix, no Status line.
+Archive files use `YYYY-MM-archive-summary.md`.
 
 ### Lifecycle skills
 Shared via the kigu plugin (enabled through the kigu marketplace in each repo's `.claude/settings.json`):
 
 | Skill | Purpose |
 |-------|---------|
-| `/dev-loop` | Drive the full development cycle with session resumption |
-| `/project-loop` | Manage priorities, roadmap, architecture review, and triage |
-| `/complete` | Summarise a finished plan, move it to `completed/`, clean ephemeral files |
-| `/archive` | Consolidate completed plans into monthly summaries |
+| `kigu:dev-loop` | Drive the full development cycle with session resumption |
+| `kigu:project-loop` | Manage priorities, roadmap, architecture review, and triage |
+| `kigu:complete` | Summarise a finished plan, move it to `completed/`, clean ephemeral files |
+| `kigu:archive` | Consolidate completed plans into monthly summaries |

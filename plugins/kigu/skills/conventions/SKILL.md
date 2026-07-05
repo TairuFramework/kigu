@@ -3,6 +3,26 @@ name: conventions
 description: Use when writing or editing code in any shared repo - canonical TypeScript, formatting, build, testing, planning, and agent-conduct conventions shared across the stack.
 ---
 
+# Conventions
+
+Canonical coding conventions for every TairuFramework stack repo. Single source of truth -- repos point here instead of restating rules.
+
+## Quick Reference
+
+| Rule | Do | Don't |
+|------|----|----|
+| Type definitions | `type Foo = {...}` | `interface Foo {...}` |
+| Arrays | `Array<T>` | `T[]` |
+| Unknown shapes | `unknown`, `Record<string, unknown>` | `any` |
+| Class privacy | `#field` + getter | `private`, `readonly`, `protected` |
+| Constructor params | single `ClassNameParams` object | positional params |
+| Abbreviations | `threadID`, `HTTP`, `JWT` | `threadId`, `Http`, `Jwt` |
+| Type imports | `import type { Foo }` | `import('...').Foo` |
+| Placeholder values | real value, optional field, or throw | `{ id: '' }` to satisfy typecheck |
+| Scope of change | only what the request requires | drive-by refactors and "improvements" |
+| Dependencies | stack packages (`kigu:stack-packages`) | third-party when a stack package fits |
+
+Details and rationale below.
 
 ## 1. TypeScript Conventions
 
@@ -179,7 +199,7 @@ Write the minimum code that solves the problem. Nothing speculative.
 - No "flexibility" or "configurability" that was not requested.
 - No error handling for impossible scenarios.
 - If 200 lines could be 50, rewrite it.
-- Before adding a third-party dependency or writing new utility code, check the `stack-packages`
+- Before adding a third-party dependency or writing new utility code, check the `kigu:stack-packages`
   skill and prefer a stack package when one fits (e.g. `@sozai/schema` over Zod).
 
 This is the same ethos as the Placeholder Values rule (section 1): do not add structure to satisfy an imagined requirement any more than you add fake values to satisfy the type checker.
@@ -192,8 +212,6 @@ Touch only what the request requires. Every changed line should trace directly t
 - Match existing style, even if you would do it differently.
 - Remove imports/variables/functions that **your** changes made unused. Do not delete pre-existing dead code -- flag it instead.
 
-This is the documented form of the constraint the surgical-edit subagent enforces by refusing 3+ file scope.
-
 ### Goal-Driven Execution
 Turn tasks into verifiable goals, then loop until verified.
 
@@ -201,7 +219,7 @@ Turn tasks into verifiable goals, then loop until verified.
 - "Fix the bug" -> "Write a test that reproduces it, then make it pass"
 - "Refactor X" -> "Ensure tests pass before and after"
 
-Strong success criteria let the agent loop independently; weak criteria ("make it work") force constant clarification. This complements the TDD and verification-before-completion workflows, and the multi-stage `/dev-loop` lifecycle documented in the `development` skill.
+Strong success criteria let the agent loop independently; weak criteria ("make it work") force constant clarification. This complements the TDD and verification-before-completion workflows, and the multi-stage `kigu:dev-loop` lifecycle documented in the `kigu:development` skill.
 
 ## 6. Root AGENTS.md shape
 
@@ -214,14 +232,14 @@ Shape:
 ```markdown
 # <repo>
 
-> Conventions: kigu `conventions` skill (canonical -- do not restate).
-> Stack map / sibling docs: kigu `stack-map` skill.
+> Conventions: `kigu:conventions` skill (canonical -- do not restate).
+> Stack map / sibling docs: `kigu:stack-map` skill.
 
 ## What this repo is
 <one paragraph, repo-specific>
 
 ## Guardrails
-See the `conventions` skill. Repo-specific only: <anything genuinely local, e.g. pnpm only>.
+See the `kigu:conventions` skill. Repo-specific only: <anything genuinely local, e.g. pnpm only>.
 ```
 
 ## 7. Canonical repo layout
@@ -240,7 +258,7 @@ docs/
   index.md              # repo doc entry; links the stack overview (TairuFramework/kigu/docs/stack.md)
   agents/
     architecture.md     # repo-specific
-    development.md       # thin: pointer to the `development` skill + repo-specific deltas only
+    development.md       # thin: pointer to the `kigu:development` skill + repo-specific deltas only
     plans/              # permanent planning -- project-loop/dev-loop/complete/archive operate here
       next/ backlog/ completed/ archive/   # created on demand (no placeholder dirs)
       milestones/                          # optional
@@ -252,7 +270,7 @@ docs/
 
 ### Rules
 - Conventions are NOT duplicated per repo -- this skill is canonical. No `docs/agents/conventions.md`.
-- Shared build/test/release workflow lives in the `development` skill. Each repo's
+- Shared build/test/release workflow lives in the `kigu:development` skill. Each repo's
   `docs/agents/development.md` is a thin pointer plus repo-specific notes only.
 - Domain reference docs live under `docs/reference/` (one name -- not `domains/` or `capabilities/`).
 - Plan folders are created on demand; never scaffold empty ones.

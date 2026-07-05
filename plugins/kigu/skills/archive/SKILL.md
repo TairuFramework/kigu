@@ -1,6 +1,6 @@
 ---
 name: archive
-description: Use when housekeeping completed plans - consolidate unreferenced completed plans into monthly summaries.
+description: Use when housekeeping the plans folders, or when docs/agents/plans/completed/ has accumulated old entries.
 ---
 
 # Archive Completed Plans
@@ -9,7 +9,7 @@ Consolidate unreferenced completed plans into monthly summaries. Invoke manually
 
 ## Process
 
-1. **Scan completed plans.** List all files in `docs/agents/plans/completed/`.
+1. **Scan completed plans.** List all files in `docs/agents/plans/completed/`. If the folder is missing or empty, report there is nothing to archive and stop.
 
 2. **Scan for cross-references.** Check `docs/agents/plans/next/` and `docs/agents/plans/backlog/` for references to completed plans. A cross-reference is any markdown link (`[text](path)`) or file path string that resolves to a completed plan's filename.
 
