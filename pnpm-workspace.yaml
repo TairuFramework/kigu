@@ -6,7 +6,10 @@ allowBuilds:
   esbuild: true
 
 catalog:
-  '@biomejs/biome': ^2.5.1
+  '@biomejs/biome': ^2.5.2
+  '@types/node': ^26.1.0
+  tsx: ^4.23.0
+  turbo: ^2.10.3
 
 catalogMode: prefer
 

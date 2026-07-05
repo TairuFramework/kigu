@@ -49,4 +49,4 @@ Before step 8, grep the files you wrote for `docs/superpowers` — any hit is a 
 
 8. **Clean up ephemeral files.** First `grep -rn "docs/superpowers" docs/agents/plans/` — a hit in a file you wrote in steps 6-7 is a dangling reference, fix it before deleting. A hit in a file you did not touch is pre-existing: flag it to the user, do not fix it in this pass. Then delete the plan from `docs/superpowers/plans/` and the spec from `docs/superpowers/specs/`.
 
-9. **Commit.** Stage all changes and commit with message: `docs: complete plan for <feature>`
+9. **Commit.** Stage all changes and commit with message: `docs: complete plan for <feature>`. If the user has said not to commit in this session, skip this step and list the files that are ready to commit instead.

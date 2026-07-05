@@ -58,6 +58,15 @@ Shared across all stack repos, pinned via `@kigu/dev`:
 | SWC | JavaScript compilation |
 | TypeScript | Type checking + declarations (strict, ES2025) |
 
+## Debugging
+
+- **Before changing code, rank the candidate root causes** (top 2-3) with the evidence for each,
+  and state which one you are investigating. Do not start editing on the first plausible theory.
+- **A hypothesis the user has rejected is dead.** Do not re-pursue it, restate it in different
+  words, or "just double-check" it. Move to the next candidate.
+- Prefer confirming a theory with a minimal reproduction or failing test before applying the fix;
+  apply the fix, then show the reproduction passing.
+
 ## Release and versioning
 
 - Versioning is per-package via changesets -- no hard `fixed` lock. Coupled packages are bumped

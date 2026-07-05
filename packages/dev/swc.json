@@ -1,9 +1,10 @@
 {
+  "$schema": "https://swc.rs/schema.json",
   "jsc": {
     "parser": {
       "syntax": "typescript"
     },
-    "target": "es2025",
+    "target": "esnext",
     "transform": {
       "optimizer": {
         "globals": {

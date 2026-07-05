@@ -74,4 +74,8 @@ jobs:
 Workflows assume conventional pnpm scripts: `lint`, `test`, `build`, and (e2e) `package`,
 `android:release`, `ios:release`. Override only paths/runner via inputs.
 
+Integration tests stay separate from unit tests: they live in their own directory (wired via
+`integration-tests-dir`) and run only after the unit sweep passes in `build-test.yml`. Do not
+fold them into a package's `test` script.
+
 `ci.yml` is kigu's own CI (not reusable): it runs actionlint over these assets and lints the repo with biome.

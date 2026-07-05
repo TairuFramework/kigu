@@ -20,6 +20,8 @@ Canonical coding conventions for every TairuFramework stack repo. Single source 
 | Type imports | `import type { Foo }` | `import('...').Foo` |
 | Placeholder values | real value, optional field, or throw | `{ id: '' }` to satisfy typecheck |
 | Scope of change | only what the request requires | drive-by refactors and "improvements" |
+| Build/tooling config | leave untouched unless the request is about it | "fixing" package.json scripts, lint config, `.npmrc` |
+| Bulk rename/codemod | Node script, or `find` + `perl -pi -e` | `sed -i` on macOS (BSD sed silently no-ops) |
 | Dependencies | stack packages (`kigu:stack-packages`) | third-party when a stack package fits |
 
 Details and rationale below.
@@ -211,6 +213,17 @@ Touch only what the request requires. Every changed line should trace directly t
 - Do not refactor things that are not broken.
 - Match existing style, even if you would do it differently.
 - Remove imports/variables/functions that **your** changes made unused. Do not delete pre-existing dead code -- flag it instead.
+- **Never modify `package.json` scripts, lint/build configuration, or `.npmrc` unless the request is explicitly about them.** If one looks wrong, flag it -- do not fix it in passing.
+
+### Bulk Edits and Codemods
+Development happens on macOS, where BSD `sed` differs from GNU sed in ways that fail silently.
+
+- **Never use `sed -i` for bulk edits.** BSD sed's `-i` takes a mandatory backup suffix, multi-file
+  invocations misbehave, and `\b` word boundaries are unsupported -- the command exits 0 having
+  changed nothing.
+- Write a small Node script, or use `find <dir> -name '*.ts' -exec perl -pi -e 's/old/new/g' {} +`.
+- After any bulk edit, verify with `git diff --stat` that the expected files actually changed --
+  a zero-file diff after a "successful" codemod means it no-opped.
 
 ### Goal-Driven Execution
 Turn tasks into verifiable goals, then loop until verified.
@@ -259,6 +272,7 @@ docs/
   agents/
     architecture.md     # repo-specific
     development.md       # thin: pointer to the `kigu:development` skill + repo-specific deltas only
+    audits/             # read-only audit reports (`kigu:audit`), created on demand
     plans/              # permanent planning -- project-loop/dev-loop/complete/archive operate here
       next/ backlog/ completed/ archive/   # created on demand (no placeholder dirs)
       milestones/                          # optional

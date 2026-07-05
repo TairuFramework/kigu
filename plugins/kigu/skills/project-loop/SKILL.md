@@ -17,6 +17,8 @@ current repo's own `docs/agents/plans/` -- including kigu itself.
 
 Project-loop operates on the main branch. Write operations (triage, roadmap, state file) modify persistent artifacts on main. If invoked on a feature branch, suggest switching to main before write operations. Read-only operations (session start summary) can run on any branch.
 
+The commit steps in the modes below are conditional: if the user has said not to commit in this session, skip them and report the changed files instead.
+
 ## On Invocation
 
 ### 1. Session Start (always runs first)

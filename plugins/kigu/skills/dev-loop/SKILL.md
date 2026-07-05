@@ -40,6 +40,8 @@ Guide through stages in order, invoking the appropriate skill at each:
 
 Stages are not atomic -- `executing` and `reviewing` can span multiple sessions. Update `**Stage:**` in the plan file when a stage completes (not during), then commit. The `**Stage:**` field lives only in the plan file -- never add one to the spec.
 
+If the user has said not to commit in this session, still update the `**Stage:**` field but skip the commit and say the stage transition is uncommitted.
+
 The `superpowers:*` skills come from the superpowers plugin. If they are not available in the current session, tell the user the plugin is missing rather than improvising the stage's workflow.
 
 ## Stage Details
