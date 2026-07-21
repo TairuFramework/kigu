@@ -1,7 +1,18 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.2/schema.json",
   "root": false,
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": { "groups": [[":NODE:", ":PACKAGE:"], ":BLANK_LINE:", ":PATH:"] }
+        },
+        "useSortedPackageJson": "on"
+      }
+    }
+  },
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
@@ -32,13 +43,35 @@
         "noParameterAssign": "error",
         "useAsConstAssertion": "error",
         "useDefaultParameterLast": "error",
-        "useEnumInitializers": "error",
+        "useErrorCause": "error",
         "useSelfClosingElements": "error",
         "useSingleVarDeclarator": "error",
         "noUnusedTemplateLiteral": "error",
         "useNumberNamespace": "error",
         "noInferrableTypes": "error",
-        "noUselessElse": "error"
+        "noUselessElse": "error",
+        "useConsistentTypeDefinitions": { "level": "error", "options": { "style": "type" } },
+        "useConsistentArrayType": { "level": "error", "options": { "syntax": "generic" } },
+        "useConsistentMemberAccessibility": {
+          "level": "error",
+          "options": { "accessibility": "none" }
+        },
+        "noParameterProperties": "error",
+        "noEnum": "error",
+        "noNamespace": "error",
+        "useNamingConvention": {
+          "level": "error",
+          "options": {
+            "conventions": [
+              {
+                "selector": { "kind": "classProperty", "modifiers": ["readonly"] },
+                "match": "__use_a_hash_field_and_a_getter_instead__"
+              },
+              { "selector": { "kind": "objectLiteralProperty" }, "match": ".*" },
+              { "selector": { "kind": "typeProperty" }, "match": ".*" }
+            ]
+          }
+        }
       }
     }
   }

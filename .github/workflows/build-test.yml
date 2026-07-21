@@ -51,7 +51,7 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - name: Lint
-        run: pnpm run lint
+        run: pnpm exec biome ci .
 
       - name: Unit tests
         run: pnpm run test

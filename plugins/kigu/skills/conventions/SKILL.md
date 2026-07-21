@@ -175,7 +175,10 @@ Run `pnpm run lint` to format and lint all packages. Run before committing.
 ## 4. Import Conventions
 
 - Prefer **named imports** over default imports
-- Group imports in order: external libraries, internal `@scope/` packages, relative imports
+- Two groups, separated by a blank line: **external** (Node builtins and all packages, including
+  scoped `@scope/` ones) then **internal** (relative paths). Sorting within each group is
+  alphabetical. Biome's `organizeImports` assist applies this on every `check --write` -- do not
+  hand-sort
 - Use workspace protocol for internal packages (e.g., `@sozai/schema`, `@kokuin/token`)
 - Use **`type` keyword** for type-only imports
 - **Always import types via module-level `import type`, never via dynamic `import()`** -- dynamic `import()` type annotations defeat tree-shaking, hurt readability, and bypass import organization
@@ -191,10 +194,10 @@ function connect(transport: import('@enkaku/transport').Transport) {}
 ```
 
 ```typescript
-import { describe, expect, test } from 'vitest'
-
-import type { Transport } from '@enkaku/transport'
+import { readFile } from 'node:fs/promises'
 import { Client } from '@enkaku/client'
+import type { Transport } from '@enkaku/transport'
+import { describe, expect, test } from 'vitest'
 
 import { createHandler } from './handler.js'
 import type { HandlerConfig } from './types.js'
