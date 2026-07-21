@@ -1,6 +1,6 @@
 {
   "name": "@kigu/dev",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Shared dev toolchain preset",
   "repository": {
     "type": "git",
@@ -23,14 +23,14 @@
   "dependencies": {
     "@biomejs/biome": "catalog:",
     "@swc/cli": "^0.8.1",
-    "@swc/core": "^1.15.43",
+    "@swc/core": "catalog:",
     "@types/node": "catalog:",
-    "@vitest/ui": "^4.1.9",
+    "@vitest/ui": "catalog:",
     "del-cli": "^7.0.0",
     "tsx": "catalog:",
     "turbo": "catalog:",
     "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "vitest": "catalog:"
   },
   "publishConfig": {
     "access": "public"
