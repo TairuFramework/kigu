@@ -18,6 +18,8 @@ Canonical coding conventions for every TairuFramework stack repo. Single source 
 | Constructor params | single `ClassNameParams` object | positional params |
 | Abbreviations | `threadID`, `HTTP`, `JWT` | `threadId`, `Http`, `Jwt` |
 | Type imports | `import type { Foo }` | `import('...').Foo` |
+| Function bodies | `{}` when multi-line | multi-line implicit-return arrow |
+| Comments | terse, why + surprises/risks | restating code, long prose |
 | Placeholder values | real value, optional field, or throw | `{ id: '' }` to satisfy typecheck |
 | Scope of change | only what the request requires | drive-by refactors and "improvements" |
 | Build/tooling config | leave untouched unless the request is about it | "fixing" package.json scripts, lint config, `.npmrc` |
@@ -98,10 +100,27 @@ class ConnectionManager {
 - Prefer template literals over string concatenation
 - Export types alongside implementation when needed
 - Use `type` keyword for type-only imports: `import type { Foo } from './foo.js'`
+- **Wrap multi-line function bodies in `{}`.** Implicit-return arrows are for single expressions only -- never wrap a multi-line expression in parentheses to keep the implicit return.
+
+```typescript
+// Correct
+const getName = (user: User) => user.name
+
+const format = (user: User) => {
+  const name = getName(user)
+  return `${name} <${user.email}>`
+}
+
+// Incorrect -- multi-line implicit return
+const format = (user: User) =>
+  `${getName(user)} <${user.email}> ` +
+  `(${user.role})`
+```
 
 ### Comments
-- **Keep comments short.** No overly long comments -- include only the necessary context, minimal token count.
+- **Keep comments terse.** One line where one line does. Only essential context, minimal token count.
 - Comment the *why*, not the *what*. Self-explanatory code needs no comment.
+- **Spend comments on surprises.** Non-obvious constraints, ordering requirements, footguns, workarounds for upstream bugs, and anything a reader would otherwise "fix" and break. Obvious code gets nothing; surprising code gets a warning.
 - No redundant comments that restate the code, no commented-out code, no decorative banners.
 - **No plan/implementation-specific references** in code, comments, `describe`/`test` names, or identifiers -- no internal task numbers, plan item labels (e.g. `G7`, `Task 6`), or ticket IDs. Reference the durable concept or external spec (e.g. `SEP-2243`, `x-mcp-header`) instead; plan labels are ephemeral and meaningless once the plan is archived.
 
