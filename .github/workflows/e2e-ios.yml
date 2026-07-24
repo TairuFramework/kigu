@@ -51,7 +51,28 @@ jobs:
           path: |
             ~/Library/Caches/CocoaPods
             ${{ inputs.working-directory }}/ios/Pods
-          key: pods-${{ runner.os }}-${{ hashFiles(format('{0}/package.json', inputs.working-directory)) }}
+          key: pods-${{ runner.os }}-${{ hashFiles(format('{0}/ios/Podfile.lock', inputs.working-directory)) }}
+          restore-keys: |
+            pods-${{ runner.os }}-
+
+      - name: Cache Xcode DerivedData
+        uses: actions/cache@v6
+        with:
+          path: ~/Library/Developer/Xcode/DerivedData
+          key: deriveddata-${{ runner.os }}-${{ hashFiles(format('{0}/ios/Podfile.lock', inputs.working-directory)) }}
+          restore-keys: |
+            deriveddata-${{ runner.os }}-
+
+      - name: Install ccache
+        run: brew install ccache
+
+      - name: Cache ccache
+        uses: actions/cache@v6
+        with:
+          path: ~/Library/Caches/ccache
+          key: ccache-${{ runner.os }}-${{ hashFiles(format('{0}/ios/Podfile.lock', inputs.working-directory)) }}
+          restore-keys: |
+            ccache-${{ runner.os }}-
 
       - name: Install Maestro
         shell: bash
@@ -61,7 +82,20 @@ jobs:
 
       - name: Build iOS app
         working-directory: ${{ inputs.working-directory }}
-        run: pnpm run ios:release
+        # USE_CCACHE=1 makes React Native's Podfile post_install wire the
+        # ccache-clang wrapper as CC/CXX. Must be set during pod install (run by
+        # expo run:ios), so the setting bakes into the cached Pods project.
+        env:
+          USE_CCACHE: '1'
+          CCACHE_MAXSIZE: 2G
+          CCACHE_COMPILERCHECK: content
+          CCACHE_SLOPPINESS: clang_index_store,include_file_ctime,include_file_mtime,time_macros
+        run: |
+          # ccache does not expand ~, so resolve CCACHE_DIR against $HOME here.
+          export CCACHE_DIR="$HOME/Library/Caches/ccache"
+          ccache --zero-stats
+          pnpm run ios:release
+          ccache --show-stats
 
       - name: Run Maestro tests
         working-directory: ${{ inputs.working-directory }}
