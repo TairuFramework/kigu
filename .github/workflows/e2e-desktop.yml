@@ -48,6 +48,11 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
 
+      - name: Resolve electron version
+        id: electron
+        shell: bash
+        run: echo "version=$(node -p "require('electron/package.json').version")" >> "$GITHUB_OUTPUT"
+
       - name: Cache electron binary
         uses: actions/cache@v6
         with:
@@ -55,7 +60,10 @@ jobs:
             ~/.cache/electron
             ~/Library/Caches/electron
             ~/AppData/Local/electron/Cache
-          key: electron-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          # Key on the electron version, not the lockfile: the cached binary only
+          # varies by version, so unrelated dep bumps must not evict it. No
+          # restore-keys — a partial match would restore a wrong-version binary.
+          key: electron-${{ runner.os }}-${{ steps.electron.outputs.version }}
 
       - name: Fetch electron binary
         # allowBuilds.electron:false blocks electron's install script, so extract

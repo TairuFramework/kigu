@@ -38,11 +38,20 @@ jobs:
         with:
           node-version: ${{ inputs.node-version }}
 
+      - name: Resolve Playwright version
+        id: playwright
+        working-directory: ${{ inputs.working-directory }}
+        shell: bash
+        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+
       - name: Cache Playwright browsers
         uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          # Key on the Playwright version, not the lockfile: browsers only vary by
+          # version, so unrelated dep bumps must not evict them. No restore-keys —
+          # a partial match would restore browsers for the wrong version.
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
 
       - name: Install Playwright browsers
         working-directory: ${{ inputs.working-directory }}
