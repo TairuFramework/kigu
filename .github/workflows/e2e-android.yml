@@ -80,7 +80,10 @@ jobs:
         run: |
           export ANDROID_AVD_HOME=$HOME/.config/.android/avd
           export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
-          echo y | sdkmanager "system-images;android-36;google_apis;x86_64"
+          # Install "emulator" explicitly: when the system image is restored from
+          # cache, sdkmanager skips its install and would otherwise never pull the
+          # emulator package it used to bring in as a dependency.
+          echo y | sdkmanager "emulator" "system-images;android-36;google_apis;x86_64"
           echo no | avdmanager create avd --force -n test-emulator --abi 'google_apis/x86_64' --package 'system-images;android-36;google_apis;x86_64'
           "$ANDROID_HOME/emulator/emulator" -avd test-emulator -no-window -no-audio -no-boot-anim -gpu swiftshader_indirect -memory 4096 -no-snapshot-save &
           adb wait-for-device
