@@ -29,6 +29,17 @@ runs:
       shell: bash
       run: pnpm install --frozen-lockfile
 
+    - name: Cache turbo
+      if: ${{ inputs.build == 'true' }}
+      uses: actions/cache@v6
+      with:
+        # Loose key + restore-keys is safe: turbo re-validates entries by content
+        # hash, so a stale restore just misses instead of serving wrong output.
+        path: .turbo
+        key: turbo-${{ runner.os }}-${{ github.sha }}
+        restore-keys: |
+          turbo-${{ runner.os }}-
+
     - name: Build packages
       if: ${{ inputs.build == 'true' }}
       shell: bash
