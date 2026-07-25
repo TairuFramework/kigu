@@ -75,7 +75,7 @@ Each question must include:
 
 4. **Paste verification output.** Run the exact verify command and paste actual output. Not a summary, not "tests pass" — the output.
 
-5. **Capture learning before moving on.** After each probe, record what was learned. If the learning changes the plan, say so. Then proceed.
+5. **Capture learning before moving on.** After each probe, record what was learned in the decision log — not in code comments (see Where Learning Goes). If the learning changes the plan, say so. Then proceed.
 
 ## Repo Domain Framing
 

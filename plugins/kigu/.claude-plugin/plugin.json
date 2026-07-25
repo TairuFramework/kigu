@@ -1,6 +1,6 @@
 {
   "name": "kigu",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Shared development plugin: workflow skills, conventions, discovery, and lifecycle hooks.",
   "author": { "name": "Paul Le Cam" }
 }

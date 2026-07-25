@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/2.5.4/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.5/schema.json",
   "root": false,
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
   "assist": {
@@ -67,6 +67,14 @@
               {
                 "selector": { "kind": "classProperty", "modifiers": ["readonly"] },
                 "match": "__use_a_hash_field_and_a_getter_instead__"
+              },
+              {
+                "selector": { "kind": "typeParameter" },
+                "formats": ["PascalCase", "CONSTANT_CASE"]
+              },
+              {
+                "selector": { "kind": "class" },
+                "formats": ["PascalCase", "CONSTANT_CASE"]
               },
               { "selector": { "kind": "objectLiteralProperty" }, "match": ".*" },
               { "selector": { "kind": "typeProperty" }, "match": ".*" }

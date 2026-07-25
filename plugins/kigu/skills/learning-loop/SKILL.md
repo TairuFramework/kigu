@@ -47,8 +47,8 @@ Dispatch a subagent to do the focused investigation/implementation work. Hand co
 - The approved approach from Step 1
 - Instructions to stop and report `BLOCKED` if the approach doesn't work (do not try alternatives without asking)
 - Instructions to run the repo's verify command (`pnpm run build && pnpm run lint && pnpm test` from root, per `kigu:development`) and include the output in the report
-- The report contract: write the full report to the sibling report file (`question-2.3-brief.md` → `question-2.3-report.md`); return only status, commits, a one-line test summary, and concerns
-- Pointers to `kigu:conventions` and the repo's `CLAUDE.md` — including the conventions rule that code, comments, and test names never reference plan questions, decision numbers, or phase labels (no `// Q3.2:`); capture the constraint or invariant directly
+- The report contract: write the full report to the sibling report file (`question-2.3-brief.md` → `question-2.3-report.md`) — findings, rationale, alternatives tried, what was learned; return only status, commits, a one-line test summary, and concerns. The report is where learning is captured; the main loop rolls it into the plan's decision log at Step 5
+- Pointers to `kigu:conventions` and the repo's `CLAUDE.md`. Comments follow conventions §1: terse, why-not-what, spent on surprises. No plan questions, decision numbers, or phase labels (no `// Q3.2:`). A constraint earns a comment only if a reader would otherwise break it — rationale, alternatives considered, and what was learned go in the report, not the code
 
 **Status contract.** The probe subagent reports one of:
 
@@ -99,7 +99,7 @@ Append to the decision log at the bottom of the plan file:
 **Learned:** [what we now know that we didn't before]
 ```
 
-Commit the decision log update and any code from the probe.
+Before committing, scan the probe's diff for comments carrying rationale, alternatives, or narration of what was learned — that content belongs in the decision log entry above, not in the code. Move it, then commit the decision log update and any code from the probe.
 
 Then present the next question and return to Step 1.
 
