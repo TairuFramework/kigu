@@ -7,7 +7,7 @@
       "source": {
         "organizeImports": {
           "level": "on",
-          "options": { "groups": [[":NODE:", ":PACKAGE:"], ":BLANK_LINE:", ":PATH:"] }
+          "options": { "groups": [[":NODE:", ":PACKAGE:"], ":BLANK_LINE:", ":ALIAS:", ":PATH:"] }
         },
         "useSortedPackageJson": "on"
       }
