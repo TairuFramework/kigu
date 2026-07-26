@@ -147,7 +147,9 @@ const skills = readdirSync(root, { withFileTypes: true })
 const allowed = new Set([plugin, ...options.allow])
 const foreign = STACK.filter((name) => !allowed.has(name))
 // Matches `/enkaku:discover` and a bare `enkaku:discover`, but not prose like `enkaku: the RPC layer`.
-const foreignRef = foreign.length ? new RegExp(`\\b(?:${foreign.join('|')}):[a-z][a-z-]*`, 'g') : null
+const foreignRef = foreign.length
+  ? new RegExp(`\\b(?:${foreign.join('|')}):[a-z][a-z-]*`, 'g')
+  : null
 const ownRef = new RegExp(`\\b${plugin}:([a-z][a-z-]*)`, 'g')
 const scopedName = new RegExp(`${scope}[a-z0-9-]+`, 'g')
 
