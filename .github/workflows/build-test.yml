@@ -17,6 +17,11 @@ on:
         type: boolean
         required: false
         default: true
+      skills-check:
+        description: 'Run the caller repo check:skills script (plugin skills validation)'
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: read
@@ -52,6 +57,10 @@ jobs:
 
       - name: Lint
         run: pnpm exec biome ci .
+
+      - name: Check skills
+        if: ${{ inputs.skills-check }}
+        run: pnpm run check:skills
 
       - name: Unit tests
         run: pnpm run test

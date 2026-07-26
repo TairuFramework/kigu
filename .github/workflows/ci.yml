@@ -36,3 +36,6 @@ jobs:
 
       - name: Lint
         run: pnpm exec biome ci ./packages ./plugins
+
+      - name: Check skills
+        run: pnpm run check:skills
