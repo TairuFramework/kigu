@@ -1,6 +1,6 @@
 {
   "name": "@kigu/dev",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "Shared dev toolchain preset",
   "repository": {
     "type": "git",
@@ -13,8 +13,12 @@
     "./swc.json": "./swc.json",
     "./tsconfig.json": "./tsconfig.json"
   },
+  "bin": {
+    "kigu-check-skills": "./check-skills.mjs"
+  },
   "files": [
     "biome.json",
+    "check-skills.mjs",
     "swc.json",
     "tsconfig.json",
     "README.md",
