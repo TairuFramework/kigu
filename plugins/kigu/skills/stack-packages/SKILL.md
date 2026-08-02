@@ -9,9 +9,9 @@ First-party packages to prefer over third-party alternatives when building featu
 stack project. They are maintained as part of the stack and provide consistent patterns
 across all repos.
 
-> **Scopes:** these packages live across the split stack — core in `@sozai`, identity/keys in
+> **Scopes:** these packages live across the split stack -- core in `@sozai`, identity/keys in
 > `@kokuin`, RPC in `@enkaku`, MLS/hub in `@kumiai`. The scopes below reflect the current
-> layout; `stack.json` and the `kigu:stack-map` skill are the authoritative source for scopes and
+> layout. `stack.json` and the `kigu:stack-map` skill are the authoritative source for scopes and
 > cross-repo dependencies.
 
 ---
@@ -150,10 +150,10 @@ Replaces custom base64, UTF-8, or CBOR encoding logic.
 
 - Base64 and Base64URL encoding/decoding
 - UTF-8 string encoding/decoding via TextEncoder/TextDecoder
-- Canonical JSON serialization (deterministic key ordering for cryptographic operations)
+- Canonical JSON serialisation (deterministic key ordering for cryptographic operations)
 - Combined convenience functions (e.g., `b64uFromJSON`)
 
-**When to use:** Any encoding/decoding task -- serializing data for transport, preparing data for cryptographic signing, converting between string and binary representations. Use this instead of writing custom encoding helpers.
+**When to use:** Any encoding/decoding task -- serialising data for transport, preparing data for cryptographic signing, converting between string and binary representations. Use this instead of writing custom encoding helpers.
 
 ### `@sozai/log` -- Structured Logging
 
@@ -162,7 +162,7 @@ Thin wrapper around LogTape for structured, category-based logging.
 - `getLogger(name)` and `getEnkakuLogger(namespace)` for namespaced loggers
 - `setup()` with sensible defaults or custom LogTape configuration
 - Structured properties via `logger.with({ key: value })`
-- Console sink included; integrates with `@sozai/otel` for OTel log bridging
+- Console sink included. Integrates with `@sozai/otel` for OTel log bridging
 
 **When to use:** Any logging need across stack services. Use this instead of `console.log` or custom logging wrappers to get structured, filterable logs.
 

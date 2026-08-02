@@ -5,7 +5,7 @@ description: Use when managing project-level priorities, roadmap, architecture r
 
 # Project Loop
 
-Orchestrate project-level management: priorities, roadmap, architecture review, and triage. Higher-level peer to dev-loop — manages the portfolio of work rather than individual feature implementation. Can delegate to dev-loop when conversation narrows to a specific feature.
+Orchestrate project-level management: priorities, roadmap, architecture review, and triage. Higher-level peer to dev-loop -- manages the portfolio of work rather than individual feature implementation. Can delegate to dev-loop when conversation narrows to a specific feature.
 
 ## Path Context
 
@@ -27,20 +27,20 @@ Check project state and present a concise summary:
 
 1. Check for in-flight dev work (`docs/superpowers/specs/`, `docs/superpowers/plans/`). If found, suggest `kigu:dev-loop` instead, but don't force it.
 2. Read `docs/agents/plans/project-loop-state.md` for last activity timestamps. If it doesn't exist, note this (first run).
-3. Scan `docs/agents/plans/next/`, `docs/agents/plans/backlog/`, `docs/agents/plans/completed/`, `docs/agents/plans/roadmap.md`, `docs/agents/plans/milestones/`. Folders and the roadmap/state files may not exist yet -- they are created on demand; treat missing ones as empty, not errors.
+3. Scan `docs/agents/plans/next/`, `docs/agents/plans/backlog/`, `docs/agents/plans/completed/`, `docs/agents/plans/roadmap.md`, `docs/agents/plans/milestones/`. Folders and the roadmap/state files may not exist yet. They are created on demand, so treat missing ones as empty, not as errors.
 4. Present summary as a few bullet points (not a wall of text).
 
 Based on findings, suggest relevant modes:
 
-- **Triage** — if backlog/next has items whose filename date prefix is more than 4 weeks old and have not been reviewed since the last triage timestamp in the state file
-- **Review** — if last review was more than 2 weeks ago per the state file, or if no review has ever been recorded
-- **Roadmap** — if no `roadmap.md` exists, or roadmap file is stale, or significant work has been completed since last roadmap update
+- **Triage** -- if `backlog/` or `next/` holds items older than 4 weeks by filename date prefix, and untouched since the state file's last triage timestamp
+- **Review** -- if last review was more than 2 weeks ago per the state file, or if no review has ever been recorded
+- **Roadmap** -- if no `roadmap.md` exists, if the roadmap file is stale, or if significant work has completed since the last roadmap update
 
-The user picks a mode, skips to `kigu:dev-loop`, or states what they want. Modes are suggestions, not gates — the user can always override.
+The user picks a mode, skips to `kigu:dev-loop`, or states what they want. Modes are suggestions, not gates -- the user can always override.
 
 ### 2. Run Selected Mode
 
-Execute the mode the user chose. After any mode completes, suggest the next natural action — including handing off to `kigu:dev-loop` if a concrete feature was identified.
+Execute the mode the user chose. After any mode completes, suggest the next natural action -- including handing off to `kigu:dev-loop` if a concrete feature was identified.
 
 ## Modes
 
@@ -54,7 +54,7 @@ Execute the mode the user chose. After any mode completes, suggest the next natu
    - Remove (no longer relevant)
    - Rewrite (outdated description)
    - Merge (duplicates another item)
-4. Present all proposed actions together; the user approves as a batch or per item
+4. Present all proposed actions together. The user approves as a batch or per item
 5. Execute approved actions (file moves, edits, deletes)
 6. Update `docs/agents/plans/project-loop-state.md` with triage timestamp
 7. Commit with message: `docs: triage plans`
@@ -70,7 +70,7 @@ Three sub-checks, presented together as a findings list:
 
 **Conventions:**
 - Spot-check a sample of code files against the `kigu:conventions` skill rules
-- Not exhaustive — sample-based to catch drift
+- Not exhaustive -- sample-based to catch drift
 
 **Completed follow-ups:**
 - Read recent items in `docs/agents/plans/completed/`
@@ -90,7 +90,7 @@ After executing:
 
 **If no roadmap exists (`docs/agents/plans/roadmap.md` not found):**
 1. Read next/, backlog/, recent completed/ and archive/ summaries, and architecture.md
-2. Synthesize into a draft roadmap: high-level goals, current priorities, rough sequencing
+2. Synthesise into a draft roadmap: high-level goals, current priorities, rough sequencing
 3. Present draft for user review
 4. Write approved version to `docs/agents/plans/roadmap.md`
 
@@ -106,7 +106,7 @@ After writing:
 1. Update `docs/agents/plans/project-loop-state.md` with roadmap timestamp
 2. Commit with message: `docs: create project roadmap` or `docs: update project roadmap`
 
-Keep the roadmap concise — goals and sequencing, not detailed specs.
+Keep the roadmap concise -- goals and sequencing, not detailed specs.
 
 ## State File
 
@@ -130,8 +130,8 @@ Format:
 
 | Artifact | Purpose |
 |----------|---------|
-| `docs/agents/plans/roadmap.md` | Project roadmap — repo-local |
-| `docs/agents/plans/project-loop-state.md` | Activity timestamps — repo-local |
+| `docs/agents/plans/roadmap.md` | Project roadmap -- repo-local |
+| `docs/agents/plans/project-loop-state.md` | Activity timestamps -- repo-local |
 
 ### Read-only
 
@@ -152,15 +152,15 @@ Format:
 ## Integration
 
 Project-loop and dev-loop are peers. Either can be invoked directly:
-- `kigu:project-loop` — big-picture management, can delegate down to dev-loop
-- `kigu:dev-loop` — feature implementation, invoked when you know what to build or have work in progress
+- `kigu:project-loop` -- big-picture management, can delegate down to dev-loop
+- `kigu:dev-loop` -- feature implementation, invoked when you know what to build or have work in progress
 
-Any time the conversation narrows to "let's build X", suggest invoking `kigu:dev-loop`. If triage or roadmap surfaces a concrete next item and the user wants to start it, same hand-off. Project-loop may suggest dev-loop; dev-loop never invokes project-loop.
+Any time the conversation narrows to "let's build X", suggest invoking `kigu:dev-loop`. If triage or roadmap surfaces a concrete next item and the user wants to start it, same hand-off. Project-loop may suggest dev-loop. Dev-loop never invokes project-loop.
 
 ## Boundaries
 
 Project-loop does NOT:
 - Execute implementation work (that's dev-loop)
 - Own the spec/plan lifecycle (that's brainstorming/writing-plans/complete/archive)
-- Make priority decisions autonomously — always presents and waits for approval
+- Make priority decisions autonomously -- always presents and waits for approval
 - Perform cross-repo analysis (future improvement)

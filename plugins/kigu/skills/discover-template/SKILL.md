@@ -30,12 +30,12 @@ description: Use when exploring {{REPO_NAME}} capabilities - progressive discove
 Load the domain skill matching your task:
 
 {{#each DOMAINS}}
-- `/{{REPO_SLUG}}:{{this.slug}}` — {{this.summary}}
+- `/{{REPO_SLUG}}:{{this.slug}}` -- {{this.summary}}
 {{/each}}
 
 ## Conventions
 
-This repo follows the shared stack conventions — see the `kigu:conventions` skill.
+This repo follows the shared stack conventions -- see the `kigu:conventions` skill.
 Repo-specific deltas, if any, are listed below.
 
 {{REPO_SPECIFIC_NOTES}}
@@ -55,12 +55,12 @@ Desktop app shell and UI components for the stack.
 
 Load the domain skill matching your task:
 
-- `/tejika:storage` — local persistence, migrations, and data access
-- `/tejika:windows` — window management and IPC patterns
+- `/tejika:storage` -- local persistence, migrations, and data access
+- `/tejika:windows` -- window management and IPC patterns
 
 ## Conventions
 
-This repo follows the shared stack conventions — see the `kigu:conventions` skill.
+This repo follows the shared stack conventions -- see the `kigu:conventions` skill.
 Repo-specific deltas, if any, are listed below.
 
 Electron-only: renderer code never imports Node.js builtins directly.

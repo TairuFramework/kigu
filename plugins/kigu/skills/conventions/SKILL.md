@@ -55,8 +55,8 @@ interface ApiResponse<T> {
 
 ### Class Conventions
 - **Use ES private fields (`#field`), never the TypeScript `private` modifier**
-- **Never use the TypeScript `readonly` modifier.** Use a `#field` for the value and expose a getter when external read access is needed -- this enforces immutability at runtime, not just at compile time
-- Avoid the `protected` modifier; prefer composition over inheritance that relies on it
+- **Never use the TypeScript `readonly` modifier.** Use a `#field` for the value, and expose a getter when external read access is needed. This enforces immutability at runtime, not only at compile time
+- Avoid the `protected` modifier. Prefer composition over inheritance that relies on it
 - Constructor params: single object parameter with a `ClassNameParams` type
 
 ```typescript
@@ -100,7 +100,7 @@ class ConnectionManager {
 - Prefer template literals over string concatenation
 - Export types alongside implementation when needed
 - Use `type` keyword for type-only imports: `import type { Foo } from './foo.js'`
-- **Wrap multi-line function bodies in `{}`.** Implicit-return arrows are for single expressions only -- never wrap a multi-line expression in parentheses to keep the implicit return.
+- **Wrap multi-line function bodies in `{}`.** Implicit-return arrows are for single expressions only. Never wrap a multi-line expression in parentheses to keep the implicit return.
 
 ```typescript
 // Correct
@@ -120,15 +120,17 @@ const format = (user: User) =>
 ### Comments
 - **Keep comments terse.** One line where one line does. Only essential context, minimal token count.
 - Comment the *why*, not the *what*. Self-explanatory code needs no comment.
-- **Spend comments on surprises.** Non-obvious constraints, ordering requirements, footguns, workarounds for upstream bugs, and anything a reader would otherwise "fix" and break. Obvious code gets nothing; surprising code gets a warning.
+- **Spend comments on surprises.** Comment non-obvious constraints, ordering requirements,
+  footguns, upstream-bug workarounds, and anything a reader would otherwise "fix" and break.
+  Obvious code gets nothing. Surprising code gets a warning.
 - No redundant comments that restate the code, no commented-out code, no decorative banners.
-- **No plan/implementation-specific references** in code, comments, `describe`/`test` names, or identifiers -- no internal task numbers, plan item labels (e.g. `G7`, `Task 6`), or ticket IDs. Reference the durable concept or external spec (e.g. `SEP-2243`, `x-mcp-header`) instead; plan labels are ephemeral and meaningless once the plan is archived.
+- **No plan/implementation-specific references** in code, comments, `describe`/`test` names, or identifiers -- no internal task numbers, plan item labels (e.g. `G7`, `Task 6`), or ticket IDs. Reference the durable concept or external spec (e.g. `SEP-2243`, `x-mcp-header`) instead. Plan labels are ephemeral, and they are meaningless once the plan is archived.
 
 ### Placeholder Values
 - **NEVER use placeholder values to satisfy the type checker.** This is a MAJOR source of bugs that pass typecheck but fail at runtime.
-- If a type expects a real value (UUID, URL, ID, token, etc.), provide a real one or refactor so the value is not required at that call site
+- If a type expects a real value (UUID, URL, ID, token), provide a real one. Or refactor so that the call site does not require the value
 - Do not write `{ id: '' }`, `{ url: 'TODO' }`, `{ token: 'xxx' }`, or similar just to make types compile
-- If you genuinely cannot supply a real value, make the field optional in the type, use `null`/`undefined` explicitly, or throw -- do not lie to the type system
+- If you genuinely cannot supply a real value, make the field optional, use `null`/`undefined` explicitly, or throw. Do not lie to the type system
 
 ```typescript
 // Incorrect -- passes typecheck, breaks at runtime
@@ -154,7 +156,7 @@ All repos use **Biome** for linting and formatting. Configuration lives in the r
 - **Semicolons**: as needed (not required everywhere)
 - **Arrow functions**: always use parentheses -- `(param) => result`
 - **JSX brackets**: same line
-- **Imports**: Biome auto-organizes imports
+- **Imports**: Biome auto-organises imports
 
 Run `pnpm run lint` to format and lint all packages. Run before committing.
 
@@ -181,7 +183,7 @@ Run `pnpm run lint` to format and lint all packages. Run before committing.
   hand-sort
 - Use workspace protocol for internal packages (e.g., `@sozai/schema`, `@kokuin/token`)
 - Use **`type` keyword** for type-only imports
-- **Always import types via module-level `import type`, never via dynamic `import()`** -- dynamic `import()` type annotations defeat tree-shaking, hurt readability, and bypass import organization
+- **Always import types via module-level `import type`, never via dynamic `import()`** -- dynamic `import()` type annotations defeat tree-shaking, hurt readability, and bypass import organisation
 
 ```typescript
 // Correct
@@ -235,7 +237,7 @@ Touch only what the request requires. Every changed line should trace directly t
 - Do not refactor things that are not broken.
 - Match existing style, even if you would do it differently.
 - Remove imports/variables/functions that **your** changes made unused. Do not delete pre-existing dead code -- flag it instead.
-- **Never modify `package.json` scripts, lint/build configuration, or `.npmrc` unless the request is explicitly about them.** If one looks wrong, flag it -- do not fix it in passing.
+- **Never modify `package.json` scripts, lint/build configuration, or `.npmrc`.** The only exception is a request that is explicitly about them. If one looks wrong, flag it. Do not fix it in passing.
 
 ### Bulk Edits and Codemods
 Development happens on macOS, where BSD `sed` differs from GNU sed in ways that fail silently.
@@ -254,7 +256,7 @@ Turn tasks into verifiable goals, then loop until verified.
 - "Fix the bug" -> "Write a test that reproduces it, then make it pass"
 - "Refactor X" -> "Ensure tests pass before and after"
 
-Strong success criteria let the agent loop independently; weak criteria ("make it work") force constant clarification. This complements the TDD and verification-before-completion workflows, and the multi-stage `kigu:dev-loop` lifecycle documented in the `kigu:development` skill.
+Strong success criteria let the agent loop independently. Weak criteria ("make it work") force constant clarification. This complements the TDD and verification-before-completion workflows, and the multi-stage `kigu:dev-loop` lifecycle documented in the `kigu:development` skill.
 
 ## 6. Root AGENTS.md shape
 
@@ -309,6 +311,79 @@ docs/
 - Shared build/test/release workflow lives in the `kigu:development` skill. Each repo's
   `docs/agents/development.md` is a thin pointer plus repo-specific notes only.
 - Domain reference docs live under `docs/reference/` (one name -- not `domains/` or `capabilities/`).
-- Plan folders are created on demand; never scaffold empty ones.
+- Plan folders are created on demand. Never scaffold empty ones.
 - The shared skills load because each repo's committed `.claude/settings.json` enables the
   kigu marketplace and the `kigu` plugin.
+
+## 8. Writing docs, comments, and skills
+
+Applies to Markdown prose in `docs/`, `AGENTS.md`, skill files, and to code comments. Code blocks,
+identifiers, and CLI commands are exempt from every rule below. A skill's frontmatter
+`description:` field is also exempt -- it stays one line and carries the routing triggers, whatever
+its length.
+
+The primary reader is an agent. Ambiguity is the failure mode, not vocabulary. These rules cut
+ambiguity at a fixed, checkable cost.
+
+### Quick reference
+
+| Rule | Do | Don't |
+|------|----|----|
+| Spelling | British (`summarise`, `prioritised`) | American (`summarize`, `prioritized`) |
+| Dashes | ` -- ` for parenthetical breaks | `—` (em dash), mixed styles in one repo |
+| Semicolons | two sentences | `Do A; then do B` |
+| Instruction sentences | one instruction, max 20 words | a step that chains grep, judge, fix, delete |
+| Descriptive sentences | max 25 words, max 6 per paragraph | one 60-word paragraph-sentence |
+| Voice | active, imperative for steps | "the file is written by the skill" |
+| Terms | one term per concept, repo-wide | `spec` / `design doc` / `brief` for one thing |
+| Warnings | risk word, then command, then reason | a bare "be careful" |
+
+### Two modes
+
+**Procedural** -- numbered steps, checklists, any text that tells the agent what to do.
+- Imperative form. One instruction per sentence, unless the actions are simultaneous.
+- Max 20 words per sentence. Split a longer step into lettered substeps.
+- State the condition first, then the command, divided by a comma:
+  `When the plan file has no Stage field, treat it as executing.`
+
+**Descriptive** -- rationale, architecture notes, "what this repo is".
+- No imperative. Max 25 words per sentence, max 6 sentences per paragraph, one topic per paragraph.
+- Give information gradually. One subject per sentence.
+
+### Warnings and guardrails
+
+Write a warning in three parts, in this order:
+1. A risk word that names the level (`CRITICAL`, `WARNING`, `NOTE`).
+2. The command or condition.
+3. The reason or consequence.
+
+```markdown
+CRITICAL: never reference a `docs/superpowers/` path from a persistent file.
+Such a link dangles the moment the ephemeral files are deleted.
+```
+
+### Consistency
+
+- Pick one term per concept and never vary it for style. Do not alternate `subagent` and `sub-agent`,
+  or `spec` and `design doc`.
+- Do not introduce a new abbreviation. Write the full word.
+- Keep punctuation style uniform across a repo. Mixed dash styles across sibling files are a bug.
+- British spelling applies to prose only. Keep the American form when it belongs to an identifier,
+  an API name, or an external spec: `organizeImports`, `serialize()`, "Decentralized Identifier".
+- `artifact` keeps its American form. It is the established term for build output and for CI
+  uploads, so `artefact` would fight every tool the docs describe.
+
+### Source
+
+These rules are adapted from ASD-STE100 Simplified Technical English (Issue 9, 2025-01-15),
+sections 2 thru 9 -- an international controlled-language standard for technical documentation:
+<https://www.asd-ste100.org>.
+
+Adapted, not adopted. The specification is ASD copyright and the name is a registered trademark.
+Reproduction requires ASD's written authority, and the free-use grant covers aerospace and defence
+organisations plus universities -- not this stack. So: do not copy rule text or the ~900-word
+approved dictionary into any repo, and never claim STE compliance.
+
+Deliberately not adopted: the controlled dictionary, the ban on using nouns as verbs (software
+English needs `commit`, `merge`, `diff` as both), and the restricted verb tenses (agent docs are
+conditional by nature).

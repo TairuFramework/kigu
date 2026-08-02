@@ -11,12 +11,18 @@ Consolidate unreferenced completed plans into monthly summaries. Invoke manually
 
 1. **Scan completed plans.** List all files in `docs/agents/plans/completed/`. If the folder is missing or empty, report there is nothing to archive and stop.
 
-2. **Scan for cross-references.** Check `docs/agents/plans/next/` and `docs/agents/plans/backlog/` for references to completed plans. A cross-reference is any markdown link (`[text](path)`) or file path string that resolves to a completed plan's filename.
+2. **Scan for cross-references.** Check these persistent locations for references to completed plans:
+   - `docs/agents/plans/next/`
+   - `docs/agents/plans/backlog/`
+   - `docs/agents/plans/roadmap.md`
+   - `docs/agents/plans/milestones/`
+
+   A cross-reference is a markdown link (`[text](path)`) or a file path string that resolves to a completed plan's filename. `roadmap.md` and `milestones/` are optional, so treat a missing one as empty.
 
 3. **Scan active work.** Check `docs/superpowers/plans/` and `docs/superpowers/specs/` for any active work referencing completed plans.
 
 4. **Present findings to the user:**
-   - **Safe to archive:** completed plans with no references from active/next/backlog
+   - **Safe to archive:** completed plans with no reference from any location in steps 2-3
    - **Still referenced:** completed plans still providing context (show what references them)
 
 5. **User selects which to archive** (or accepts the suggestion).
@@ -40,6 +46,6 @@ Consolidate unreferenced completed plans into monthly summaries. Invoke manually
 
 8. **Delete individual completed plan files** that were archived.
 
-9. **Fix stale cross-references.** Update any references in `docs/agents/plans/backlog/` and `docs/agents/plans/next/` that pointed to now-deleted completed plans -- update to point at the monthly summary file or remove the reference.
+9. **Fix stale cross-references.** Search every location from step 2 for references to a deleted completed plan. Point each one at the monthly summary file, or remove it. A roadmap or milestone entry keeps its own text -- only the link target changes.
 
-10. **Commit.** Stage all changes and commit with message: `docs: archive completed plans for <month(s)>`
+10. **Commit.** Stage all changes and commit with the message `docs: archive completed plans for <month(s)>`

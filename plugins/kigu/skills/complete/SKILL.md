@@ -11,17 +11,22 @@ All writes happen on the feature branch. The persistent files in `docs/agents/pl
 
 ## CRITICAL: no ephemeral references in persistent files
 
-Files under `docs/superpowers/` (specs/, plans/) are **ephemeral** — step 8 deletes them. Every persistent file this skill writes (the completed summary AND any follow-on in `next/`/`backlog/`) MUST be self-contained: **never reference a `docs/superpowers/` path.** Such a link dangles the moment step 8 runs.
+Files under `docs/superpowers/` (specs/, plans/) are **ephemeral**. Step 8 deletes them.
+
+**Never reference a `docs/superpowers/` path from a persistent file.** Such a link dangles the moment step 8 runs. This applies to every persistent file this skill writes: the completed summary and any follow-on item in `next/` or `backlog/`.
 
 When carrying context from a spec/plan into a persistent file:
-- **Inline the substance** (the design decision, the invariant, the rationale) directly — do not link to the source.
+- **Inline the substance** (the design decision, the invariant, the rationale) directly -- do not link to the source.
 - **Cross-reference siblings instead:** point to the completed summary (`docs/agents/plans/completed/...`) or another `next/`/`backlog/` item, never the ephemeral origin.
 
-Before step 8, grep the files you wrote for `docs/superpowers` — any hit is a bug, fix it first.
+Before step 8, grep the files you wrote for `docs/superpowers` -- any hit is a bug, fix it first.
 
 ## Process
 
-1. **Find the plan and spec.** Read the plan from `docs/superpowers/plans/` and spec from `docs/superpowers/specs/`. If multiple files exist, ask the user which to complete. If only one of the two exists, proceed with what is there (note the gap in the summary). If neither exists, report there is nothing to complete and stop.
+1. **Find the plan and spec.** Read the plan from `docs/superpowers/plans/` and the spec from `docs/superpowers/specs/`.
+   - If multiple files exist, ask the user which one to complete.
+   - If only one of the two exists, proceed with what is there and note the gap in the summary.
+   - If neither exists, report that there is nothing to complete, then stop.
 
 2. **Verify completion.** Check that all plan tasks are checked and tests are passing.
 
@@ -47,6 +52,11 @@ Before step 8, grep the files you wrote for `docs/superpowers` — any hit is a 
    - Filename: `YYYY-MM-DD-feature-name.md` (today's date, kebab-case slug, no status suffix)
    - These are persistent: self-contained, no `docs/superpowers/` references (see CRITICAL above).
 
-8. **Clean up ephemeral files.** First `grep -rn "docs/superpowers" docs/agents/plans/` — a hit in a file you wrote in steps 6-7 is a dangling reference, fix it before deleting. A hit in a file you did not touch is pre-existing: flag it to the user, do not fix it in this pass. Then delete the plan from `docs/superpowers/plans/` and the spec from `docs/superpowers/specs/`.
+8. **Clean up ephemeral files.**
+   A. Run `grep -rn "docs/superpowers" docs/agents/plans/`.
+   B. A hit in a file you wrote in steps 6-7 is a dangling reference. Fix it before you delete anything.
+   C. A hit in a file you did not touch is pre-existing. Flag it to the user, and do not fix it in this pass.
+   D. Delete the plan from `docs/superpowers/plans/` and the spec from `docs/superpowers/specs/`.
 
-9. **Commit.** Stage all changes and commit with message: `docs: complete plan for <feature>`. If the user has said not to commit in this session, skip this step and list the files that are ready to commit instead.
+9. **Commit.** Stage all changes and commit with the message `docs: complete plan for <feature>`.
+   When the user has said not to commit in this session, skip this step. List the files that are ready to commit instead.

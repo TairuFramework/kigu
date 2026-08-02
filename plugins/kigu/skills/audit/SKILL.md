@@ -15,15 +15,19 @@ Read-only fan-out audit: parallel per-package explorers, evidence-verified findi
 
 ## Process
 
-1. **Scope.** List the audit units: packages under `packages/`, apps, `tests/` suites, CI workflows -- whatever the repo contains. Confirm the dimensions with the user if not stated: security, architecture, code health, UX, strategy alignment.
+1. **Scope.** List the audit units: packages under `packages/`, apps, `tests/` suites, CI workflows, and whatever else the repo contains. If the user did not state the dimensions, confirm them: security, architecture, code health, UX, strategy alignment.
 
 2. **Fan out.** Dispatch one explorer agent per unit, in parallel. Each agent returns findings as: one-line summary, severity (critical/high/medium/low), `file:line` evidence, suggested remediation. Agents are read-only.
 
-3. **Verify.** For every critical and high finding, read the cited code yourself (or dispatch a verifier agent) and confirm it holds. Downgrade or drop anything that does not reproduce from the evidence. Findings that survive get marked verified.
+3. **Verify.** For every critical and high finding, read the cited code yourself, or dispatch a verifier agent. Confirm that the finding holds. Downgrade or drop anything that does not reproduce from the evidence. Mark the findings that survive as verified.
 
-4. **Synthesize.** Merge duplicates across units, rank by verified severity, keep medium/low findings in a secondary section.
+4. **Synthesise.** Merge duplicates across units, rank by verified severity, keep medium/low findings in a secondary section.
 
-5. **Write the report.** Save to `docs/agents/audits/YYYY-MM-DD-<scope>.md` (today's date; scope like `security` or `full`). Structure: summary paragraph, ranked verified findings (each with severity, evidence, remediation), secondary findings, list of units covered and any units skipped.
+5. **Write the report.** Save it to `docs/agents/audits/YYYY-MM-DD-<scope>.md`, with today's date and a scope such as `security` or `full`. Use this structure:
+   - Summary paragraph
+   - Ranked verified findings, each with severity, evidence, and remediation
+   - Secondary findings
+   - The units covered, and any units skipped
 
 6. **Link it.** Add the report to `docs/index.md`. Create the `docs/agents/audits/` folder on demand.
 
@@ -31,4 +35,4 @@ Read-only fan-out audit: parallel per-package explorers, evidence-verified findi
 
 ## Coverage honesty
 
-If any unit was skipped, any dimension not audited, or any finding left unverified, say so explicitly in the report and in the final summary to the user. A truncated audit that reads as complete is worse than a smaller honest one.
+Say so explicitly, in the report and in the final summary, whenever you skip a unit, skip a dimension, or leave a finding unverified. A truncated audit that reads as complete is worse than a smaller honest one.

@@ -13,7 +13,7 @@ Repo-specific additions live in that repo's `docs/agents/development.md`.
 All repos use pnpm workspaces with Turbo for build orchestration.
 
 ### Package management
-- Always use `pnpm`, never `npm`; `pnpm exec`/`pnpm dlx`, never `npx`/`pnpx`.
+- Always use `pnpm`, never `npm`. Use `pnpm exec`/`pnpm dlx`, never `npx`/`pnpx`.
 - Use `workspace:^` for internal package dependencies.
 - Add shared dependency versions to the pnpm catalog (`pnpm-workspace.yaml`) when possible.
 - Each package builds independently. Avoid circular dependencies.
@@ -40,10 +40,10 @@ Root commands: `pnpm run build`, `pnpm run build:types`, `pnpm run build:js`, `p
 
 Vitest is the test runner.
 
-- `pnpm test` runs type checks + unit tests; `pnpm run test:types` and `pnpm run test:unit` split them.
+- `pnpm test` runs type checks + unit tests. `pnpm run test:types` and `pnpm run test:unit` split them.
 - Use `test` (not `it`). Import `{ describe, expect, test } from 'vitest'`.
 - Test files use `.test.ts`, placed in `test/` or `__tests__/` per repo convention.
-- Use async/await for async tests; cover both success and failure.
+- Use async/await for async tests. Cover both success and failure.
 
 ## Toolchain
 
@@ -64,8 +64,8 @@ Shared across all stack repos, pinned via `@kigu/dev`:
   and state which one you are investigating. Do not start editing on the first plausible theory.
 - **A hypothesis the user has rejected is dead.** Do not re-pursue it, restate it in different
   words, or "just double-check" it. Move to the next candidate.
-- Prefer confirming a theory with a minimal reproduction or failing test before applying the fix;
-  apply the fix, then show the reproduction passing.
+- Confirm a theory with a minimal reproduction or failing test before you apply the fix.
+  Apply the fix, then show the reproduction passing.
 
 ## Release and versioning
 
@@ -79,7 +79,8 @@ Shared across all stack repos, pinned via `@kigu/dev`:
 
 ## Planning and documentation
 
-Persistent plan artifacts live in `docs/agents/plans/`; ephemeral working docs in `docs/superpowers/`.
+Persistent plan artifacts live in `docs/agents/plans/`. Ephemeral working docs live in
+`docs/superpowers/`.
 
 ### Ephemeral (branch lifetime)
 ```

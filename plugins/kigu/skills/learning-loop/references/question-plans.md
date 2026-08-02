@@ -4,7 +4,7 @@ The plan format the learning loop executes. Plans are structured as questions to
 
 ## Philosophy
 
-Implementation is a sequence of small probes that build confidence or surface problems. Code is a side effect — learning is the primary output.
+Implementation is a sequence of small probes that build confidence or surface problems. Code is a side effect -- learning is the primary output.
 
 ```
 probe → result → capture what was learned → learning informs next step
@@ -12,11 +12,11 @@ probe → result → capture what was learned → learning informs next step
 
 Each probe is a small, contained change that validates one assumption from the spec or plan:
 
-1. **State the assumption** — "the query builder supports separate migration tables per plugin"
-2. **Write the minimal code/test to verify it** — a focused test, not a full implementation
-3. **Run it, observe the result** — either confirms or contradicts
-4. **Capture the learning** — record what was learned, at the right level (see below)
-5. **Decide the next step based on what was learned** — not based on the plan's question list
+1. **State the assumption** -- "the query builder supports separate migration tables per plugin"
+2. **Write the minimal code/test to verify it** -- a focused test, not a full implementation
+3. **Run it, observe the result** -- either confirms or contradicts
+4. **Capture the learning** -- record what was learned, at the right level (see below)
+5. **Decide the next step based on what was learned** -- not based on the plan's question list
 
 If a step takes longer than expected, that IS the finding. Stop, report what's blocking. Difficulty is information, not a challenge to push through.
 
@@ -59,24 +59,24 @@ Exit criteria: <what must be true to close the phase>
 
 Each question must include:
 
-1. **Assumption to validate** — the specific thing this probe is testing
-2. **Done when** — explicit acceptance criteria. If it's in scope, it's in the criteria. Nothing is implicitly "future work" unless the criteria say so.
-3. **Spec excerpt** — the relevant spec section copied into the question, not just linked
-4. **Verify command** — the exact command, run from repo root. Paste actual output.
-5. **What was learned** — filled in after completion (in the decision log), before moving to the next question
+1. **Assumption to validate** -- the specific thing this probe is testing
+2. **Done when** -- explicit acceptance criteria. If it's in scope, it's in the criteria. Nothing is implicitly "future work" unless the criteria say so.
+3. **Spec excerpt** -- the relevant spec section copied into the question, not just linked
+4. **Verify command** -- the exact command, run from repo root. Paste actual output.
+5. **What was learned** -- filled in after completion (in the decision log), before moving to the next question
 
 ## Rules
 
 1. **Write usage as a test file.** Before implementing an API, write an actual test showing how a developer would use it. If the test reads awkwardly, fix the API before implementing.
 
-2. **Nothing is "future work" unless the question says so.** Do not defer parts of a question to make it easier. If the question is too large, ask to split it — don't silently shrink it.
+2. **Nothing is "future work" unless the question says so.** Do not defer parts of a question to make it easier. If the question is too large, ask to split it -- don't silently shrink it.
 
-3. **Two strikes, then ask.** If an approach has failed twice, or you're about to deviate from the plan, stop and explain what's happening before trying a third thing. Difficulty is a signal, not a challenge.
+3. **Two strikes, then ask.** Stop when an approach has failed twice, or when you are about to deviate from the plan. Explain what is happening before you try a third thing. Difficulty is a signal, not a challenge.
 
-4. **Paste verification output.** Run the exact verify command and paste actual output. Not a summary, not "tests pass" — the output.
+4. **Paste verification output.** Run the exact verify command and paste actual output. Not a summary, not "tests pass" -- the output.
 
-5. **Capture learning before moving on.** After each probe, record what was learned in the decision log — not in code comments (see Where Learning Goes). If the learning changes the plan, say so. Then proceed.
+5. **Capture learning before moving on.** After each probe, record what was learned in the decision log -- not in code comments (see Where Learning Goes). If the learning changes the plan, say so. Then proceed.
 
 ## Repo Domain Framing
 
-This reference covers the shared mechanics only. A repo may add its own domain decision framework — the questions to answer before any code is planned (e.g. a UX → DX → implementation chain) — in its local `docs/agents/`. When such a doc exists, read it alongside this reference.
+This reference covers the shared mechanics only. A repo may add its own domain decision framework -- the questions to answer before any code is planned (e.g. a UX → DX → implementation chain) -- in its local `docs/agents/`. When such a doc exists, read it alongside this reference.
