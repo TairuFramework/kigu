@@ -147,7 +147,8 @@ Format:
 | `docs/agents/architecture.md` | Architecture documentation |
 | `AGENTS.md` | Project agent instructions |
 | the `kigu:conventions` skill | Canonical code conventions (kigu plugin) |
-| the `kigu:development` skill | Canonical build/test/release workflow (kigu plugin) |
+| the `kigu:development` skill | Canonical build/test workflow (kigu plugin) |
+| the `kigu:releasing` skill | Canonical versioning/publishing workflow (kigu plugin) |
 
 ## Integration
 

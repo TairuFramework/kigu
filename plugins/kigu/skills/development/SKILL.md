@@ -1,6 +1,6 @@
 ---
 name: development
-description: Use when building, testing, or releasing in any stack repo - the shared pnpm/turbo/changesets/biome/vitest workflow and the docs/agents/plans lifecycle.
+description: Use when building, testing, or debugging in any stack repo - the shared pnpm/turbo/biome/vitest workflow and the docs/agents/plans lifecycle. Releasing lives in the kigu:releasing skill.
 ---
 
 # Development
@@ -69,13 +69,9 @@ Shared across all stack repos, pinned via `@kigu/dev`:
 
 ## Release and versioning
 
-- Versioning is per-package via changesets -- no hard `fixed` lock. Coupled packages are bumped
-  together by the releaser's judgement, not enforced config.
-- Cross-repo dependencies are published `^` semver ranges, never `workspace:`. Develop across a
-  repo boundary via a canary/prerelease publish.
-- 1.0 promotion is per-repo, whole: a repo goes 1.0 as a unit once its surface is stable, and
-  every package in it goes 1.0 together (SDK-bound packages included -- 1.0 is semver discipline,
-  they can still major often).
+Versioning, changelogs, and publishing live in the `kigu:releasing` skill -- pnpm built-in
+versioning (11.13+), `pnpm change` intents, `pnpm version -r`, and the pitfalls of the
+changesets migration. Load it when cutting a release, not when building.
 
 ## Planning and documentation
 

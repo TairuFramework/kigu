@@ -2,18 +2,30 @@
 
 **Priority:** low — nothing is broken; kumiai is the pilot and has proven the shape.
 **Origin:** kumiai `chore/pnpm-native-versioning`, 2026-08-01.
+**Status (2026-08-07):** kumiai, sozai and kokuin are migrated. Only `enkaku` is left. The shape
+is now documented in the `kigu:releasing` skill, so the notes below are history, not the spec.
 
 pnpm 11.13+ ships release management that reads the Changesets intent format, so `@changesets/cli`
 buys nothing. kumiai migrated: `versioning:` block in `pnpm-workspace.yaml`, `.changeset/config.json`
 deleted, `pnpm change` / `pnpm version -r` / `pnpm publish -r` replacing the Changesets commands.
 
-Remaining repos, with their current Changesets config:
+Remaining repo, with its current Changesets config:
 
-- `sozai` — `fixed: []`, `linked: []`
-- `kokuin` — `fixed: []`, `linked: []`
 - `enkaku` — `fixed: [["@enkaku/*"]]`, a real lock that `versioning.fixed` expresses directly
 
-Three things bite in any migration and are worth copying rather than rediscovering:
+Done:
+
+- `kumiai` — pilot, 2026-08-01.
+- `sozai` — `fixed: []`, `linked: []`.
+- `kokuin` — `fixed: []`, `linked: []`; migrated 2026-08-07. Hit the private-package crash below,
+  which the kumiai notes did not cover.
+
+Four things bite in any migration and are worth copying rather than rediscovering:
+
+- Every private package must appear in `versioning.ignore` **by exact name** — globs are not
+  supported. An omitted one makes `pnpm change status` and `pnpm version -r` die with
+  `Cannot read properties of undefined (reading '<that package's version>')` the moment a bump has
+  to propagate into it. kokuin's `tests/*` workspace packages hit this.
 
 - Changesets' `"access": "public"` has no pnpm counterpart. Scoped packages default to **restricted**
   under `pnpm publish -r`, so every publishable manifest needs

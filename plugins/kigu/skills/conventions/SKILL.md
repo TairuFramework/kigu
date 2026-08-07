@@ -287,7 +287,9 @@ Every stack repo matches one shape. Shared guidance is sourced from kigu skills,
 - `AGENTS.md` -- thin pointer (see §6). Source of truth for repo context.
 - `CLAUDE.md` -- single line `@AGENTS.md`.
 - `README.md` -- human-facing.
-- `.changeset/` -- present where the repo publishes packages.
+- `.changeset/` -- present where the repo publishes packages: pending `pnpm change` intents plus
+  the `ledger.yaml` written by `pnpm version -r`. No `config.json` -- release settings live under
+  `versioning:` in `pnpm-workspace.yaml`.
 
 ### docs/ tree
 ```
@@ -308,8 +310,9 @@ docs/
 
 ### Rules
 - Conventions are NOT duplicated per repo -- this skill is canonical. No `docs/agents/conventions.md`.
-- Shared build/test/release workflow lives in the `kigu:development` skill. Each repo's
-  `docs/agents/development.md` is a thin pointer plus repo-specific notes only.
+- Shared build/test workflow lives in the `kigu:development` skill, versioning and publishing in
+  `kigu:releasing`. Each repo's `docs/agents/development.md` is a thin pointer plus
+  repo-specific notes only.
 - Domain reference docs live under `docs/reference/` (one name -- not `domains/` or `capabilities/`).
 - Plan folders are created on demand. Never scaffold empty ones.
 - The shared skills load because each repo's committed `.claude/settings.json` enables the

@@ -51,6 +51,7 @@ docs paths, dependency edges) is `stack.json` in the `stack-map` skill.
 - **A sibling's docs** — every repo has `docs/index.md`, `docs/agents/architecture.md`, and
   `docs/reference/`. Route via the `stack-map` skill.
 - **Conventions / build workflow** — the `conventions` and `development` skills (kigu plugin).
+- **Versioning / publishing** — the `releasing` skill (kigu plugin).
 - **Repo layout** — conventions skill §7.
 
 ## History
