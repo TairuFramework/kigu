@@ -9,6 +9,8 @@
     "types": [],
     "declaration": true,
     "jsx": "react-jsx",
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "verbatimModuleSyntax": true,
+    "noUncheckedIndexedAccess": true
   }
 }
