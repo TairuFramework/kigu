@@ -6,13 +6,13 @@ allowBuilds:
   esbuild: true
 
 catalog:
-  '@biomejs/biome': ^2.5.7
-  '@swc/core': ^1.15.47
-  '@types/node': ^26.1.2
-  '@vitest/ui': ^4.1.10
-  tsx: ^4.23.9
-  turbo: ^2.10.8
-  vitest: ^4.1.10
+  '@biomejs/biome': ^2.5.11
+  '@swc/core': ^1.16.1
+  '@types/node': ^26.4.1
+  '@vitest/ui': ^4.1.11
+  tsx: ^4.23.13
+  turbo: ^2.10.12
+  vitest: ^4.1.11
 
 catalogMode: prefer
 
