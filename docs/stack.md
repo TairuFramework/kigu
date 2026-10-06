@@ -15,10 +15,8 @@ kigu (器具) ── tooling hub: @kigu/dev configs + Claude Code plugin marketp
 sozai (素材)  ←  kokuin (刻印)  ←  enkaku (遠隔)  ←  kumiai (組合)
  core            identity          RPC              MLS / group
    │                                 ▲
-   ▼
-hozon (保存) — database layer
-                                     │
-                                  tejika (手近) — local-side foundation
+   ▼                                 │
+hozon (保存) — database layer     tejika (手近) — local-side foundation
                                   mokei (模型) — MCP toolkit
 ```
 
