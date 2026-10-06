@@ -1,8 +1,4 @@
-# The TairuFramework stack
-
-Status: production (2026). Eight sibling repositories under the `TairuFramework` GitHub org,
-split out of the original enkaku monorepo — code ported, packages published, cross-repo deps
-on published `^` ranges. This is the entry-point overview; each repo owns its own docs.
+# The Kigu stack
 
 ## Repos
 
@@ -25,11 +21,11 @@ hozon (保存) — database layer     tejika (手近) — local-side foundation
 | kigu | 器具 | `@kigu` | tooling hub: configs + plugin marketplace + conventions | — |
 | sozai | 素材 | `@sozai` | core utilities + external-library wrappers | — |
 | kokuin | 刻印 | `@kokuin` | identity / auth / keys | sozai |
+| hozon | 保存 | `@hozon` | database layer: adapters, drivers, migrations, stores | sozai |
 | enkaku | 遠隔 | `@enkaku` | RPC framework | sozai, kokuin |
 | tejika | 手近 | `@tejika` | local-side foundation (CLI / process / server) | enkaku |
 | kumiai | 組合 | `@kumiai` | MLS group messaging | sozai, kokuin, enkaku |
 | mokei | 模型 | `@mokei` | MCP toolkit: clients / servers / providers + host monitoring | sozai, enkaku, tejika |
-| hozon | 保存 | `@hozon` | database layer: adapters, drivers, migrations, stores | sozai |
 
 GitHub: `https://github.com/TairuFramework/<repo>`. The machine-readable index (scopes, URLs,
 docs paths, dependency edges) is `stack.json` in the `stack-map` skill.
