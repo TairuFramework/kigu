@@ -19,7 +19,11 @@ later, separate spec.
 - One conformance suite passes, unchanged, on every shipped driver: node:sqlite, Postgres,
   SQLocal (web: chromium, firefox, webkit), and Expo SQLite (iOS, Android), plus node:sqlite
   inside the Electron main process.
-- Every e2e harness runs in CI on push to `main` and on pull requests.
+- Local integration tests (`pnpm run test:integration`) cover node:sqlite file databases
+  and real Postgres, including both stores and the logtape / otel adapters.
+- Every e2e harness runs the conformance suite and the store scenarios (`store-log`,
+  `store-telemetry`, logtape sink, OTel exporter, persistence across restart).
+- Integration and e2e suites run in CI on push to `main` and on pull requests.
 - The `@hozon/db` API can host Kubun's store model (registry, `dependsOn`, savepoints,
   commit / rollback hooks, `kubun_` table prefix) without breaking changes on Kubun's side
   beyond renames.
@@ -82,7 +86,7 @@ platform matrix, following kigu conventions §6–7. The first commit is this sc
 | File | Source | Changes |
 |---|---|---|
 | `package.json` | kokuin | `name: "hozon-repo"`; add tejika's `build:ci`, `build:types:ci`, `lint:ci` scripts; `release` uses `build:ci`; `packageManager` = latest used in the stack (`pnpm@12.9.1`) |
-| `pnpm-workspace.yaml` | kokuin | `packages: [packages/*, tests/*]`; `allowBuilds` (`@swc/core: true`, `electron: false`, `esbuild: false`); `nodeLinker: hoisted`; `versioning.changelog.storage: repository`; `versioning.ignore` lists only the private harnesses `e2e-electron`, `e2e-expo`, `e2e-node`, `e2e-web`; catalog trimmed to hozon's deps (kysely, kysely-postgres-js, postgres, expo / expo-sqlite, sqlocal, `@sozai/log`, `@logtape/logtape`, `@opentelemetry/*`, `@testcontainers/postgresql`, Playwright, Electron Forge, Vite, React / RN, typescript, `@types/node`, `@kigu/dev`) at the versions kokuin and kubun currently pin; `catalogMode: prefer`; kokuin's `yauzl` override and Expo `minimumReleaseAgeExclude` entries as needed; `supportedArchitectures: current` |
+| `pnpm-workspace.yaml` | kokuin | `packages: [packages/*, tests/*]`; `allowBuilds` (`@swc/core: true`, `electron: false`, `esbuild: false`); `nodeLinker: hoisted`; `versioning.changelog.storage: repository`; `versioning.ignore` lists only the private test packages `e2e-electron`, `e2e-expo`, `e2e-web`, `integration-tests`; catalog trimmed to hozon's deps (kysely, kysely-postgres-js, postgres, expo / expo-sqlite, sqlocal, `@sozai/log`, `@logtape/logtape`, `@opentelemetry/*`, `@testcontainers/postgresql`, Playwright, Electron Forge, Vite, React / RN, typescript, `@types/node`, `@kigu/dev`) at the versions kokuin and kubun currently pin; `catalogMode: prefer`; kokuin's `yauzl` override and Expo `minimumReleaseAgeExclude` entries as needed; `supportedArchitectures: current` |
 | `turbo.json` | kokuin | verbatim |
 | `tsconfig.json` | kokuin | `paths: { "@hozon/*": ["./packages/*"] }` |
 | `tsconfig.build.json` | tejika | verbatim |
@@ -115,11 +119,13 @@ packages exist, as the last hozon-plan task.
 `tsconfig.json` + `tsconfig.test.json` as in kokuin (browser / RN packages adjust `lib` and
 `types`).
 
-**CI workflows** (`.github/workflows/`): `build-test.yml` (copy of tejika / kokuin),
-`test-platforms.yml` (adapted from tejika: ubuntu / macos / windows × Node 24 / 26, runs
-node-sqlite conformance and `tests/e2e-node` file-database scenarios), `e2e-node.yml`
-(Postgres service container), `e2e-web.yml`, `e2e-desktop.yml`, `e2e-ios.yml`,
-`e2e-android.yml` (copies of kokuin's, pointing at hozon's `tests/*`).
+**CI workflows** (`.github/workflows/`): `build-test.yml` (copy of tejika / kokuin, plus
+`integration-tests-dir: tests/integration`), `test-platforms.yml` (adapted from tejika, runs
+`tests/integration` on the OS matrix), `e2e-web.yml`, `e2e-desktop.yml`, `e2e-ios.yml`,
+`e2e-android.yml` (copies of kokuin's, pointing at hozon's `tests/*`). Details in §4.
+
+**Root scripts** add `"test:integration": "pnpm run --filter integration-tests test"`
+(mokei's pattern); root `test` stays unit-only so it needs no Docker.
 
 **GitHub**: push `main` once the scaffold commit passes `build-test` locally; npm org
 `@hozon` already exists.
@@ -318,29 +324,88 @@ seams; migrations (lazy, `dependsOn`, retry after failure, `SchemaVersionError`,
 `tablePrefix`); transactions (commit, rollback, nesting, savepoints, hooks); `store-log`
 and `store-telemetry` contracts (ported from mokei `test/contracts`).
 
-### Unit tests (`build-test`)
+### Test tiers
+
+| Tier | Where | Runs | Purpose |
+|---|---|---|---|
+| Unit | `packages/*/test` | `pnpm run test` (turbo `test:types` + `test:unit`) | pure logic, in-memory node:sqlite (`:memory:`); no Docker, no files |
+| Integration | `tests/integration` | `pnpm run test:integration` locally; CI via kigu `build-test` `integration-tests-dir: tests/integration` and `test-platforms.yml` | real node:sqlite files and real Postgres, drivers + `HozonDB` + stores + telemetry adapters together |
+| E2e | `tests/e2e-{web,electron,expo}` | per-platform workflows | the same conformance + store scenarios inside real platform runtimes |
+
+### Unit tests
 
 Each package runs `tsc --noEmit` + vitest. `node-sqlite` runs conformance on `:memory:`.
-Postgres conformance uses testcontainers (`postgres:18-alpine`) when Docker is available,
-skipped otherwise (always exercised by `e2e-node`).
+No unit test needs Docker or the filesystem.
+
+### Integration tests (`tests/integration`, private package `integration-tests`)
+
+Pattern from enkaku's `tests/integration`. Vitest, one config, two backends selected by
+`describe.each`:
+
+- **node:sqlite**: file databases in a per-test temp directory.
+- **Postgres**: `HOZON_POSTGRES_URL` if set (local server, CI service), otherwise
+  testcontainers `postgres:18-alpine`; skipped with a visible notice when neither is
+  available, failed instead of skipped when `CI=true`. Each test gets its own database
+  (`CREATE DATABASE hozon_test_<random>`, dropped after).
+
+Local usage: `pnpm run test:integration` (Docker running), or
+`HOZON_POSTGRES_URL=postgres://… pnpm run test:integration`. A `docker-compose.yml` in
+`tests/integration` starts a matching `postgres:18-alpine` for repeated local runs.
+
+Scenarios, on both backends unless noted:
+
+- Full `@hozon/conformance` suite against a real file / server.
+- `HozonDB` lifecycle: open → migrate → close → reopen keeps data; multiple stores with
+  `dependsOn`; `tablePrefix` isolation (two `HozonDB`s with different prefixes on one
+  database); failed migration rolls back and retries on next open.
+- `SchemaVersionError`: database migrated with a newer migration set is refused; node:sqlite
+  file left byte-identical (no WAL switch); Postgres left with unchanged migration tables.
+- Concurrency: two processes writing the same node:sqlite file (WAL + `busy_timeout`, no
+  `SQLITE_BUSY`); concurrent transactions and savepoints on a Postgres pool.
+- `store-log`: batch insert, `queryLogs` filters (time range, levels, `categoryPrefix`,
+  `traceID`), cursor pagination over > 1 page, `deleteByTrace`, `deleteBefore` with
+  `keepTraceIDs`, chunked deletes beyond 500 IDs, persistence across reopen.
+- `store-telemetry`: batch insert, upsert on `(trace_id, span_id)`, `getSpans` ordering,
+  `deleteByTrace`, `deleteBefore` with `keepTraceIDs`, chunked deletes, persistence across
+  reopen.
+- `@hozon/logtape`: logtape configured with the sink → records land in `store-log`;
+  `tracedOnly` and `excludeCategories` filtering; `['hozon']` self-exclusion; `flush()`
+  drains; write failure reported, not thrown.
+- `@hozon/otel`: `BasicTracerProvider` + `BatchSpanProcessor` + exporter → spans land in
+  `store-telemetry`; `forceFlush` / `shutdown` drain pending writes.
+- `@hozon/provider`: string resolution to real node:sqlite and Postgres adapters.
 
 ### E2e harnesses (`tests/*`, `workspace:^`, excluded from versioning)
 
-| Harness | Driver | Runner | Scenarios beyond conformance |
-|---|---|---|---|
-| `tests/e2e-node` | node-sqlite (file), postgres | vitest | concurrent writes from two processes (WAL + busy_timeout); reopen persistence; opening a newer-version database is refused and the file is left byte-identical |
-| `tests/e2e-web` | sqlocal (OPFS) | Playwright chromium / firefox / webkit | data persists across reload; Vite preview serves COOP / COEP headers |
-| `tests/e2e-electron` | node-sqlite in main process, invoked over IPC | Playwright `_electron`, macOS + Windows | data persists across app restart |
-| `tests/e2e-expo` | expo-sqlite | Maestro, iOS + Android | data persists across app restart |
+Every in-app harness runs two suites and shows both summaries:
 
-In-app harnesses render one row per case with a `testID` and a summary line
-`Conformance: OK n/n`; runners assert on the summary and report the failing row.
+1. **Conformance**: the full `@hozon/conformance` suite (adapter, db, `store-log` and
+   `store-telemetry` contracts) on the platform driver.
+2. **Stores**: the platform store scenario — configure logtape with `@hozon/logtape` and an
+   OTel `BasicTracerProvider` with `@hozon/otel`, emit logs inside spans, flush, then query
+   `store-log` (`queryLogs` by `traceID` and level) and `store-telemetry` (`getSpans`) and
+   check the records match. A second phase after reload / restart re-queries the same
+   trace to prove persistence, then runs `deleteBefore` retention and checks it.
+
+| Harness | Driver | Runner | Persistence step |
+|---|---|---|---|
+| `tests/e2e-web` | sqlocal (OPFS) | Playwright chromium / firefox / webkit | page reload; Vite preview serves COOP / COEP headers |
+| `tests/e2e-electron` | node-sqlite in main process, invoked over IPC | Playwright `_electron`, macOS + Windows | app restart |
+| `tests/e2e-expo` | expo-sqlite | Maestro, iOS + Android | app restart |
+
+In-app harnesses render one row per case with a `testID` and summary lines
+`Conformance: OK n/n` and `Stores: OK n/n`; runners assert on the summaries and report the
+failing row. Node-side scenarios formerly planned for a `tests/e2e-node` harness live in
+`tests/integration`.
 
 ### CI (`.github/workflows/`, push to `main` + `pull_request`)
 
-- `build-test.yml` → `TairuFramework/kigu/.github/workflows/build-test.yml@main`, Node 24 / 26.
-- `e2e-node.yml` → inline job with a `postgres:18` service container and
-  `HOZON_POSTGRES_URL`.
+- `build-test.yml` → `TairuFramework/kigu/.github/workflows/build-test.yml@main`, Node 24 /
+  26, `integration-tests-dir: tests/integration` (ubuntu runners have Docker, so Postgres
+  runs through testcontainers).
+- `test-platforms.yml` → adapted from tejika: ubuntu / macos / windows × Node 24 / 26, runs
+  `tests/integration` with `HOZON_INTEGRATION_BACKENDS=node-sqlite` on macOS / Windows
+  (no Docker there) and both backends on ubuntu.
 - `e2e-web.yml`, `e2e-desktop.yml`, `e2e-ios.yml`, `e2e-android.yml` → kigu reusable
   workflows, mirroring kokuin's configuration.
 
