@@ -12,7 +12,7 @@ sozai (素材)  ←  kokuin (刻印)  ←  enkaku (遠隔)  ←  kumiai (組合)
  core            identity          RPC              MLS / group
    │                                 ▲
    ▼                                 │
-hozon (保存) — database layer     tejika (手近) — local-side foundation
+hozon (保存) — database layer ←  tejika (手近) — local-side foundation
                                   mokei (模型) — MCP toolkit
 ```
 
@@ -23,7 +23,7 @@ hozon (保存) — database layer     tejika (手近) — local-side foundation
 | kokuin | 刻印 | `@kokuin` | identity / auth / keys | sozai |
 | hozon | 保存 | `@hozon` | database layer: adapters, drivers, migrations, stores | sozai |
 | enkaku | 遠隔 | `@enkaku` | RPC framework | sozai, kokuin |
-| tejika | 手近 | `@tejika` | local-side foundation (CLI / process / server) | enkaku |
+| tejika | 手近 | `@tejika` | local-side foundation (CLI / process / server) | sozai, enkaku, hozon |
 | kumiai | 組合 | `@kumiai` | MLS group messaging | sozai, kokuin, enkaku |
 | mokei | 模型 | `@mokei` | MCP toolkit: clients / servers / providers + host monitoring | sozai, enkaku, tejika |
 

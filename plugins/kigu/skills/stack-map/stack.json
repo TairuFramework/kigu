@@ -53,7 +53,7 @@
       "repo": "https://github.com/TairuFramework/tejika",
       "docs": "docs/",
       "domainPlugin": "tejika",
-      "dependsOn": ["enkaku"]
+      "dependsOn": ["sozai", "enkaku", "hozon"]
     },
     {
       "name": "kumiai",
