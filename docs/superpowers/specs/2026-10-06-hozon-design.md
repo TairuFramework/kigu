@@ -33,7 +33,7 @@ later, separate spec.
 | Topic | Decision |
 |---|---|
 | Kubun reuse | Kubun will consume hozon; API must fit its store model |
-| Existing mokei databases | Reset is acceptable (pre-1.0 local data) |
+| Existing mokei databases | None to handle: mokei's SQLite database has not shipped; hozon's schema is its v1 |
 | Blob storage | Stays in kubun; `store-blob` only informed the store API shape |
 | Drivers in v1 | node:sqlite, Postgres, Expo SQLite, SQLocal. better-sqlite3 dropped |
 | Log / span stores | In this spec, as two independent stores |
@@ -53,22 +53,24 @@ later, separate spec.
 ## 1. Packages and dependencies
 
 ```
-@hozon/adapter         kysely                         dialect seams
-@hozon/db              adapter, @sozai/log            HozonDB: registry, migrations, tx / savepoints / hooks
-@hozon/node-sqlite     adapter                        node:sqlite DatabaseSync → Kysely (Node ≥ 24, Electron main)
-@hozon/postgres        adapter, postgres, kysely-postgres-js
-@hozon/expo            adapter, expo-sqlite (peer)    custom Kysely driver, single-connection mutex
-@hozon/sqlocal         adapter, sqlocal (peer)        browser OPFS worker
-@hozon/provider        db, node-sqlite, postgres      resolve ':memory:' | path | postgres:// → adapter (Node only)
-@hozon/conformance     adapter, db, store-log, store-telemetry   runner-agnostic suite; vitest (optional peer) for the
-                                                                 `@hozon/conformance/vitest` subpath export
-@hozon/store-log       db                             logs store
-@hozon/store-telemetry db                             spans store (metrics later)
+@hozon/adapter         kysely                                   dialect seams
+@hozon/db              adapter, kysely, @sozai/log              HozonDB: registry, migrations, tx / savepoints / hooks
+@hozon/node-sqlite     adapter, kysely                          node:sqlite DatabaseSync → Kysely (Node ≥ 24, Electron main)
+@hozon/postgres        adapter, kysely, postgres, kysely-postgres-js
+@hozon/expo            adapter, kysely; peer expo-sqlite        custom Kysely driver, single-connection mutex
+@hozon/sqlocal         adapter, kysely; peer sqlocal            browser OPFS worker
+@hozon/provider        adapter, db, node-sqlite, postgres       resolve ':memory:' | path | postgres:// → adapter (Node only)
+@hozon/conformance     adapter, db, kysely, store-log, store-telemetry; optional peer vitest
+                                                                runner-agnostic suite; `@hozon/conformance/vitest` subpath
+@hozon/store-log       adapter, db, kysely                      logs store
+@hozon/store-telemetry adapter, db, kysely                      spans store (metrics later)
 @hozon/logtape         store-log, @sozai/json, @sozai/log; peers @logtape/logtape, @opentelemetry/api
 @hozon/otel            store-telemetry, @sozai/log, @opentelemetry/core; peers @opentelemetry/sdk-trace-base, @opentelemetry/api
 ```
 
-Dependency lists above are complete for the ported code (mokei's sink imports
+Each package declares every package it imports at runtime or in emitted declarations
+directly (no reliance on transitive or hoisted dependencies), so turbo's `^build:types`
+edges match the real graph. Dependency lists above are complete for the ported code (mokei's sink imports
 `@sozai/json` / `@sozai/log`; its exporter imports `@opentelemetry/core`). Each new
 dependency gets a catalog entry in `pnpm-workspace.yaml`.
 
@@ -120,8 +122,9 @@ packages exist, as the last hozon-plan task.
 **Package template** (from `tejika/packages/env`, so per-package scripts match the root's
 `build:types:ci` / `build:ci` / `release` lifecycle): `package.json` with
 `repository.directory`, `license: MIT`, `sideEffects: false`, `type: module`,
-`exports: { ".": "./lib/index.js" }`, `files: ["lib/*"]`, tejika's `build` / `build:js`
-(swc with `@kigu/dev/swc.json`) / `build:types` / `build:types:ci` / `prepublishOnly` /
+`exports: { ".": "./lib/index.js" }`, `files: ["lib/*"]`, tejika's `build` / `build:clean` / `build:js`
+(swc with `@kigu/dev/swc.json`) / `build:types` / `build:types:ci`
+(`--declarationMap false`) / `prepack` (`build:clean && build:js && build:types:ci`) /
 `test` / `test:types` / `test:unit` scripts, `publishConfig.access: public`; `tsconfig.json`
 + `tsconfig.test.json` as in tejika / kokuin (browser / RN packages adjust `lib` and
 `types`). Note: the kigu `setup` action runs `pnpm run build`, not `build:ci`, so `build`
@@ -159,7 +162,7 @@ type Adapter<T extends AdapterTypes = AdapterTypes> = {
   encodeTimestamp(value: Date): T['Timestamp']
   decodeTimestamp(value: T['Timestamp']): Date
   coerceFilterValue(value: unknown): unknown
-  numericCast(expression: Expression<unknown>): Expression<number>
+  numericCast(expression: Expression<unknown>): Expression<number>   // Postgres: ::double precision
   nullOrdering(expression: Expression<unknown>, direction: OrderDirection): NullOrderingTerm
   containsPredicate(expression: Expression<unknown>, pattern: string): RawBuilder<boolean>
   arrayIncludesAllPredicate(expression: Expression<unknown>, values: Array<unknown>): RawBuilder<boolean>
@@ -181,6 +184,11 @@ type Adapter<T extends AdapterTypes = AdapterTypes> = {
   `double precision`).
 - Dialect behaviour otherwise as kubun: SQLite timestamps are epoch seconds, Postgres
   `timestamptz(3)`; booleans in filters are `1` / `0` on SQLite.
+- Fix: Postgres `numericCast` casts to `double precision` instead of kubun's `numeric`,
+  which postgres.js returns as a string; conformance selects a cast expression and asserts
+  a `number` on every driver.
+- Fix: the node:sqlite wrapper converts boolean bind values to `1` / `0` (native boolean
+  binding only exists from Node 24.21 / 26.8; hozon supports all Node ≥ 24).
 - Fix: the Expo serializer currently binds booleans as `'true'` / `'false'`, mismatching
   `coerceFilterValue`. It binds `1` / `0`; conformance asserts identical round-trips on
   all SQLite drivers.
@@ -256,14 +264,18 @@ Semantics are ported from `KubunDB` unchanged unless listed below:
   the second store's write rolls back the first.
 - Kysely instance uses `ParseJSONResultsPlugin`.
 - New: `SchemaVersionError` when the database records a migration the code does not know
-  (database written by a newer version). The check is per store and runs before that
-  store's first migration, including stores registered after earlier stores were already
-  migrated (Kubun plugins register late): read `${tablePrefix}_${name}_migration` if it
-  exists, compare its rows with the store's registered migration keys, throw on unknown
-  keys. `adapter.prepare?.()` runs once, after the first store passes its check and before
-  any migration writes; later stores only run their own check. Migration tables of stores
-  that are never registered are ignored (a plugin that is not installed is not an error).
-  Nothing is written for a store whose check fails.
+  (database written by a newer version). Check for one store: read
+  `${tablePrefix}_${name}_migration` if it exists, compare its rows with the store's
+  registered migration keys, throw on unknown keys. Stores with an empty migration set are
+  checked too (before kubun's existing early return).
+- **Preflight.** On the first migration trigger (`migrate()`, first `getStore`, or first
+  `withTransaction`), `HozonDB` checks every store registered at that point, then calls
+  `adapter.prepare?.()` once, then migrates. If any check fails, nothing is written to the
+  database (no `prepare`, no migration of any store). A store registered after preflight
+  is checked on its own before its first migration; the no-write guarantee for it covers
+  that store's migrations only (WAL and earlier stores are already in place). Migration
+  tables of stores that are never registered are ignored (a plugin that is not installed
+  is not an error).
 - Logging via `getLogger(['hozon', ...])` from `@sozai/log`, so all hozon records share the
   `['hozon']` category root (`getSozaiLogger` would produce `['sozai', 'hozon']`).
 - Kubun passes `tablePrefix: 'kubun'`, so its existing databases need no migration.
@@ -311,11 +323,21 @@ Store name `log`. Type `StoredLog = { traceID?, spanID?, timestamp: number, leve
 'trace' | 'debug' | 'info' | 'warning' | 'error' | 'fatal', category: Array<string>,
 message: string, properties: Record<string, JSONValue> }`. Also exported:
 `TracedLog = StoredLog & { traceID: string; spanID: string }` and `isTracedLog(log)`.
-mokei's `StoredLog` (trace fields required) is assignable to hozon's on input; on output
-mokei's facade narrows with `isTracedLog` (logs queried by `traceID` always satisfy it).
+`traceID` and `spanID` are paired: both present or both absent. `addLogs` throws a
+`TypeError` naming the offending index (and writes nothing from the batch) when only one
+is set, so every stored log with a `trace_id` also has a `span_id` and `getTraceLogs` can
+return `TracedLog`. mokei's `StoredLog` (trace fields required) is assignable to hozon's on
+input.
 
 Table `hozon_logs`: `seq` (serial PK), `timestamp` (double), `level` (text), `category`
-(dot-joined text), `trace_id` (nullable), `span_id` (nullable), `data` (json). Indexes:
+(segment-encoded text, see below), `trace_id` (nullable), `span_id` (nullable), `data`
+(json).
+
+Category encoding is injective: segments joined with `\u001f` plus a trailing `\u001f`
+(`['a', 'b']` → `a\u001fb\u001f`, `['a.b']` → `a.b\u001f`). Segments containing `\u001f`
+are rejected by `addLogs`. `categoryPrefix` matches whole segments with a range comparison
+`category >= :p AND category < :p || '\uffff'` (`:p` is the encoded prefix), so no `LIKE`
+and no wildcard escaping. The original array is kept in `data`. Indexes:
 `(timestamp)`, `(trace_id, timestamp, seq)`, `(level, timestamp)`.
 
 ```ts
@@ -361,12 +383,15 @@ deleteBefore(time: number, params?: { keepTraceIDs?: Array<string> }): Promise<n
 - `deleteByTrace(traceIDs)`: IDs deleted in chunks of 500 (`DELETE … WHERE trace_id IN
   (chunk)`); each chunk is independent, so chunking is correct.
 - `deleteBefore(time, { keepTraceIDs })`: protected IDs are inserted, 500 per statement,
-  into a temporary selection table (`CREATE TEMP TABLE hozon_keep_<store> (trace_id text
-  PRIMARY KEY)` on SQLite, `CREATE TEMP TABLE … ON COMMIT DROP` on Postgres), then one
-  delete runs with an anti-join: `DELETE … WHERE <time column> < :time AND (trace_id IS
-  NULL OR trace_id NOT IN (SELECT trace_id FROM hozon_keep_<store>))`. The cutoff is
+  with conflict-ignore (`INSERT OR IGNORE` / `ON CONFLICT DO NOTHING`, so duplicates are
+  fine) into a temporary selection table `hozon_keep_<store>` (`trace_id text PRIMARY
+  KEY`), created with `CREATE TEMP TABLE` on both dialects (no `ON COMMIT DROP`). One
+  delete then runs with an anti-join: `DELETE … WHERE <time column> < :time AND (trace_id
+  IS NULL OR trace_id NOT IN (SELECT trace_id FROM hozon_keep_<store>))`. The cutoff is
   strict (`<`). Logs without a trace are deleted by time only. The temp table is dropped
-  at the end (SQLite) or with the transaction (Postgres). No statement ever binds more
+  explicitly at the end of each call (in a `finally` within the same transaction), so
+  repeated calls inside one outer transaction do not collide; tests cover two
+  `deleteBefore` calls in one transaction and duplicate keep IDs. No statement ever binds more
   than 500 parameters; integration tests use 40,000 protected IDs as mokei's contract
   does.
 
@@ -448,11 +473,13 @@ Scenarios, on both backends unless noted:
 - `HozonDB` lifecycle: open → migrate → close → reopen keeps data; multiple stores with
   `dependsOn`; `tablePrefix` isolation (two `HozonDB`s with different prefixes on one
   database); failed migration rolls back and retries on next open.
-- `SchemaVersionError`: database migrated with a newer migration set is refused; node:sqlite
+- `SchemaVersionError`: database migrated with a newer migration set is refused, also when
+  only a later-registered or `dependsOn` store is newer; node:sqlite
   file left byte-identical (no WAL switch); Postgres left with unchanged migration tables.
 - Concurrency: two processes writing the same node:sqlite file (WAL + `busy_timeout`, no
   `SQLITE_BUSY`); concurrent transactions and savepoints on a Postgres pool.
-- `store-log`: batch insert, `queryLogs` filters (time range, levels, `categoryPrefix`,
+- `store-log`: batch insert, unpaired trace / span IDs rejected, `queryLogs` filters (time
+  range, levels, `categoryPrefix` incl. segments containing `.`, `%`, `_`,
   `traceID`), chronological order for out-of-order inserts, `(timestamp, seq)` cursor
   pagination over > 1 page including equal timestamps, `getTraceLogs`, `deleteByTrace` with
   > 500 IDs, `deleteBefore` with 40,000 `keepTraceIDs` and untraced logs, persistence
@@ -504,9 +531,11 @@ in teardown. These are harness dev dependencies, not hozon runtime dependencies.
 unavailable, which would let conformance pass without testing persistence. The web
 harness asserts `(await sqlocal.getDatabaseInfo()).storageType === 'opfs'` before running
 suites; the reload phase re-checks data written before reload. Chromium and Firefox are
-required; WebKit is best-effort: its Playwright project runs with `continue-on-error`
-semantics (separate project, failures reported but not blocking) until OPFS is proven to
-work there, and the outcome is recorded in `docs/reference/drivers.md`.
+required; WebKit is best-effort. The harness has `test` (Playwright `--project chromium
+--project firefox`, blocking) and `test:webkit` (`--project webkit`). kigu's reusable
+`e2e-web` workflow runs only the blocking `test`, so hozon's `e2e-web.yml` adds a separate
+inline job running `test:webkit` with `continue-on-error: true`, uploading its report.
+The WebKit outcome is recorded in `docs/reference/drivers.md`.
 
 In-app harnesses render one row per case with a `testID` and summary lines
 `Conformance: OK n/n` and `Stores: OK n/n`; runners assert on the summaries and report the
@@ -521,14 +550,17 @@ failing row. Node-side scenarios formerly planned for a `tests/e2e-node` harness
 - `test-platforms.yml` → adapted from tejika: ubuntu / macos / windows × Node 24 / 26, runs
   `tests/integration` with `HOZON_INTEGRATION_BACKENDS=node-sqlite` on macOS / Windows
   (no Docker there) and both backends on ubuntu.
-- `e2e-web.yml`, `e2e-desktop.yml`, `e2e-ios.yml`, `e2e-android.yml` → kigu reusable
-  workflows, mirroring kokuin's configuration.
+- `e2e-web.yml` → kigu reusable workflow for `test` (chromium, firefox) plus an inline
+  non-blocking `test:webkit` job.
+- `e2e-desktop.yml`, `e2e-ios.yml`, `e2e-android.yml` → kigu reusable workflows, mirroring
+  kokuin's configuration.
 
 ### Early risks
 
 - Playwright WebKit OPFS support (best-effort, non-blocking; see SQLocal storage check).
 - `node:sqlite` in Electron 44's main process (bundles Node 24). The first electron test
-  asserts availability via `process.versions`.
+  imports `node:sqlite` in the packaged app's main process, opens `:memory:`, runs
+  `SELECT 1`, and closes; `process.versions` is logged only as a diagnostic.
 
 ## 5. Consumers
 
@@ -571,9 +603,8 @@ failing row. Node-side scenarios formerly planned for a `tests/e2e-node` harness
   path is decided in the mokei plan.
 - `service.ts` opens via `openLocalDatabase({ app: 'mokei', name: 'flow', stores })`;
   `--database-path` still overrides.
-- Reset: the database file moves from `mokei.db` to `flow.db`. On start, a legacy
-  `mokei.db` (plus `-wal` / `-shm`) with `user_version = 1` is deleted and one info line is
-  logged.
+- No legacy handling: mokei's SQLite database has not shipped, so hozon's schema is its
+  first. The default file is `flow.db` in mokei's data dir.
 - Tests: `test/contracts` run against memory and hozon-backed stores; `persistence`,
   `restart`, `service` and `cli` daemon-shutdown ordering tests retained.
 
