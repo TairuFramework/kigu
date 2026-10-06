@@ -74,6 +74,16 @@
       "docs": "docs/",
       "domainPlugin": "mokei",
       "dependsOn": ["sozai", "enkaku", "tejika"]
+    },
+    {
+      "name": "hozon",
+      "scope": "@hozon",
+      "kanji": "保存",
+      "role": "database layer: adapters, drivers, migrations, stores",
+      "repo": "https://github.com/TairuFramework/hozon",
+      "docs": "docs/",
+      "domainPlugin": "hozon",
+      "dependsOn": ["sozai"]
     }
   ]
 }
