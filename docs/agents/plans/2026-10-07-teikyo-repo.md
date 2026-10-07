@@ -385,7 +385,8 @@ rather than building on `hono/jwt`: Hono's verifier only accepts a missing or `"
 header (rejecting RFC 9068 `at+jwt` access tokens) and always requires `kid`. No upstream change
 is pursued; no new crypto dependency.
 
-- `oauthResourcePlugin({ resource, authorizationServers, mode })` registers the RFC 9728
+- `oauthResourcePlugin({ resource, authorizationServers, verifier })` (verifier from `createJWKSVerifier`,
+  `createIssuerVerifier` or `createDIDVerifier`) registers the RFC 9728
   protected-resource metadata route and exports
   `{ requireBearer(opts?: { scopes?: Array<string> }): MiddlewareHandler }` (applied per route
   via `ctx.route`).
