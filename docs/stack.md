@@ -14,6 +14,8 @@ sozai (素材)  ←  kokuin (刻印)  ←  enkaku (遠隔)  ←  kumiai (組合)
    ▼                                 │
 hozon (保存) — database layer ←  tejika (手近) — local-side foundation
                                   mokei (模型) — MCP toolkit
+                                  teikyo (提供) — production HTTP server plugins
+                                    (builds on sozai, kokuin, enkaku, hozon)
 ```
 
 | repo | kanji | scope | role | depends on |
@@ -25,6 +27,7 @@ hozon (保存) — database layer ←  tejika (手近) — local-side foundation
 | enkaku | 遠隔 | `@enkaku` | RPC framework | sozai, kokuin |
 | tejika | 手近 | `@tejika` | local-side foundation (CLI / process / server) | sozai, enkaku, hozon |
 | kumiai | 組合 | `@kumiai` | MLS group messaging | sozai, kokuin, enkaku |
+| teikyo | 提供 | `@teikyo` | production HTTP server plugins | sozai, kokuin, enkaku, hozon |
 | mokei | 模型 | `@mokei` | MCP toolkit: clients / servers / providers + host monitoring | sozai, enkaku, tejika |
 
 GitHub: `https://github.com/TairuFramework/<repo>`. The machine-readable index (scopes, URLs,

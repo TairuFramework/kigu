@@ -84,6 +84,16 @@
       "docs": "docs/",
       "domainPlugin": "hozon",
       "dependsOn": ["sozai"]
+    },
+    {
+      "name": "teikyo",
+      "scope": "@teikyo",
+      "kanji": "提供",
+      "role": "production HTTP server plugins",
+      "repo": "https://github.com/TairuFramework/teikyo",
+      "docs": "docs/",
+      "domainPlugin": "teikyo",
+      "dependsOn": ["sozai", "kokuin", "enkaku", "hozon"]
     }
   ]
 }
