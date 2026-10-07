@@ -190,7 +190,7 @@ Sequence:
    longer budget at registration, e.g. enkaku's own cleanup timeout). A hook that times out keeps
    running in the background — it is *not* considered closed. Its dependencies' hooks still run
    (shutdown must complete), and the overlap is logged as an error naming both plugins.
-6. `disposed` resolves; `HTTPServer.shutdownReport` records per-plugin outcome (`closed`,
+6. `disposed` resolves; `HTTPServer.shutdownReport` records per-plugin outcome (`completed`,
    `failed`, `timed-out`) and whether the drain deadline forced sockets closed.
 
 Post-listen server `error` events are logged, never thrown. Full task tracking and cancellation of
@@ -458,7 +458,7 @@ plugins below run on it.
 - Request errors: plugins throw `HTTPException`; the root app owns the error envelope and
   `notFound`.
 - Shutdown: one deadline for stop + drain; `onShutdown` ends streams while sockets are open;
-  cleanup hooks individually bounded; timed-out hooks are reported, not treated as closed;
+  cleanup hooks individually bounded; timed-out hooks are reported, not treated as completed;
   dispose always completes and records a `ShutdownReport`.
 - Access fails closed without leaking internals: store and revocation-lookup errors deny with a
   generic message (original kept as `cause`, logged); capabilities without `jti` are rejected by
