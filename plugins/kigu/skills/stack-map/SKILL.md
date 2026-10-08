@@ -5,7 +5,7 @@ description: Use when working across the TairuFramework stack -- to find a sibli
 
 # Stack map
 
-The stack is seven sibling repos under the `TairuFramework` GitHub org. This skill is the router
+The stack is nine sibling repos under the `TairuFramework` GitHub org. This skill is the router
 between them. The data lives in `stack.json`, next to this file. This document is how to use it.
 
 ## The repos

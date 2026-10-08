@@ -4,7 +4,7 @@
   "author": "Paul Le Cam",
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@12.9.1",
+  "packageManager": "pnpm@12.10.1",
   "scripts": {
     "check:skills": "node packages/dev/check-skills.mjs",
     "lint": "biome check --write ./packages ./plugins",

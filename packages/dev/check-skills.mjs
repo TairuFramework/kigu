@@ -6,7 +6,18 @@ import { join } from 'node:path'
 
 // Namespaces a skill reference can name. Anything here that is not the repo's own
 // plugin is a cross-repo reference, legal only when passed to --allow.
-const STACK = ['kigu', 'sozai', 'kokuin', 'enkaku', 'kumiai', 'tejika', 'mokei', 'kubun']
+const STACK = [
+  'kigu',
+  'sozai',
+  'kokuin',
+  'enkaku',
+  'kumiai',
+  'tejika',
+  'mokei',
+  'kubun',
+  'hozon',
+  'teikyo',
+]
 
 const FENCE = /^```[^\n]*\n[\s\S]*?^```[^\n]*$/gm
 

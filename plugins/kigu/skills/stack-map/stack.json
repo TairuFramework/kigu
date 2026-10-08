@@ -33,7 +33,7 @@
       "repo": "https://github.com/TairuFramework/kokuin",
       "docs": "docs/",
       "domainPlugin": "kokuin",
-      "dependsOn": ["sozai"]
+      "dependsOn": ["sozai", "hozon"]
     },
     {
       "name": "enkaku",
@@ -63,7 +63,7 @@
       "repo": "https://github.com/TairuFramework/kumiai",
       "docs": "docs/",
       "domainPlugin": "kumiai",
-      "dependsOn": ["sozai", "kokuin", "enkaku"]
+      "dependsOn": ["sozai", "hozon", "kokuin", "enkaku", "teikyo"]
     },
     {
       "name": "mokei",
@@ -73,7 +73,7 @@
       "repo": "https://github.com/TairuFramework/mokei",
       "docs": "docs/",
       "domainPlugin": "mokei",
-      "dependsOn": ["sozai", "enkaku", "tejika"]
+      "dependsOn": ["sozai", "hozon", "enkaku", "tejika", "teikyo"]
     },
     {
       "name": "hozon",
@@ -84,6 +84,16 @@
       "docs": "docs/",
       "domainPlugin": "hozon",
       "dependsOn": ["sozai"]
+    },
+    {
+      "name": "teikyo",
+      "scope": "@teikyo",
+      "kanji": "提供",
+      "role": "production HTTP server plugins",
+      "repo": "https://github.com/TairuFramework/teikyo",
+      "docs": "docs/",
+      "domainPlugin": "teikyo",
+      "dependsOn": ["sozai", "hozon", "kokuin", "enkaku"]
     }
   ]
 }
