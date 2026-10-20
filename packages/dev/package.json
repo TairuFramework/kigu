@@ -30,7 +30,7 @@
     "@swc/core": "catalog:",
     "@types/node": "catalog:",
     "@vitest/ui": "catalog:",
-    "del-cli": "^7.0.0",
+    "del-cli": "catalog:",
     "tsx": "catalog:",
     "turbo": "catalog:",
     "typescript": "^6.0.3",
