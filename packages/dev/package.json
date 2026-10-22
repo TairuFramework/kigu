@@ -1,6 +1,6 @@
 {
   "name": "@kigu/dev",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Shared dev toolchain preset",
   "repository": {
     "type": "git",

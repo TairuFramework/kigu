@@ -3,14 +3,14 @@ on:
   workflow_call:
     inputs:
       working-directory:
-        description: 'Directory of the Expo e2e test app'
+        description: "Directory of the Expo e2e test app"
         type: string
         required: false
         default: tests/e2e-expo
       node-version:
         type: string
         required: false
-        default: '24'
+        default: "24"
 
 permissions:
   contents: read

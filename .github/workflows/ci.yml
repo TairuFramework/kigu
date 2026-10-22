@@ -32,7 +32,7 @@ jobs:
       - name: Setup environment
         uses: ./setup
         with:
-          build: 'false'
+          build: "false"
 
       - name: Lint
         run: pnpm exec biome ci ./packages ./plugins

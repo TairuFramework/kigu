@@ -3,19 +3,19 @@ on:
   workflow_call:
     inputs:
       working-directory:
-        description: 'Directory of the desktop e2e test app'
+        description: "Directory of the desktop e2e test app"
         type: string
         required: false
         default: tests/e2e-electron
       os:
-        description: 'JSON array of runner OSes'
+        description: "JSON array of runner OSes"
         type: string
         required: false
         default: '["macos-latest", "windows-latest"]'
       node-version:
         type: string
         required: false
-        default: '24'
+        default: "24"
 
 permissions:
   contents: read

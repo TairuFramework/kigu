@@ -2,7 +2,9 @@
   "$schema": "https://biomejs.dev/schemas/2.6.2/schema.json",
   "root": false,
   "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
-  "files": { "includes": ["**", "!**/pnpm-lock.yaml", "!**/pnpm-workspace.yaml"] },
+  "files": {
+    "includes": ["**", "!**/pnpm-lock.yaml", "!**/pnpm-workspace.yaml", "!**/.changeset"]
+  },
   "assist": {
     "actions": {
       "source": {
@@ -35,6 +37,7 @@
       "trailingCommas": "all"
     }
   },
+  "markdown": { "formatter": { "enabled": false } },
   "linter": {
     "enabled": true,
     "includes": ["**"],
