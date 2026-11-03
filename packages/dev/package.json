@@ -1,6 +1,6 @@
 {
   "name": "@kigu/dev",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Shared dev toolchain preset",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
   ],
   "dependencies": {
     "@biomejs/biome": "catalog:",
-    "@swc/cli": "^0.8.1",
+    "@swc/cli": "catalog:",
     "@swc/core": "catalog:",
     "@types/node": "catalog:",
     "@vitest/ui": "catalog:",
