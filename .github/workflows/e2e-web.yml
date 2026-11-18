@@ -42,7 +42,9 @@ jobs:
         id: playwright
         working-directory: ${{ inputs.working-directory }}
         shell: bash
-        run: echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "version=$(node -p "require('@playwright/test/package.json').version")" >> "$GITHUB_OUTPUT"
+          echo "image=${ImageOS:-unknown}-${RUNNER_ARCH}" >> "$GITHUB_OUTPUT"
 
       - name: Cache Playwright browsers
         uses: actions/cache@v6
@@ -51,7 +53,10 @@ jobs:
           # Key on the Playwright version, not the lockfile: browsers only vary by
           # version, so unrelated dep bumps must not evict them. No restore-keys —
           # a partial match would restore browsers for the wrong version.
-          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+          # Also key on the runner image (ImageOS, e.g. ubuntu24/ubuntu26): Playwright
+          # ships a separate browser build per OS release under the same directory
+          # name, so a build cached on one image fails to load its libraries on another.
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.image }}-${{ steps.playwright.outputs.version }}
 
       - name: Install Playwright browsers
         working-directory: ${{ inputs.working-directory }}
